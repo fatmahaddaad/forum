@@ -15,6 +15,8 @@ class DefaultController extends AbstractController
     {
         $user = new User($request->get('username'));
         $user->setPassword($encoder->encodePassword($user, $request->get('password')));
+        $user->setEmail($request->get('email'));
+        $user->setDate(new \DateTime());
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($user);
