@@ -31,6 +31,16 @@ class User implements UserInterface
     private $password;
 
     /**
+     * @ORM\Column(type="string", length=225, unique=true)
+     */
+    private $email;
+
+    /**
+     * @ORM\Column(type="datetime", name="date")
+     */
+    private $date;
+
+    /**
      * @ORM\Column(name="is_active", type="boolean")
      */
     private $isActive;
@@ -59,6 +69,26 @@ class User implements UserInterface
     public function setPassword($password)
     {
         $this->password = $password;
+    }
+
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    public function setEmail($email): void
+    {
+        $this->email = $email;
+    }
+
+    public function getDate()
+    {
+        return $this->date;
+    }
+
+    public function setDate($date): void
+    {
+        $this->date = $date;
     }
 
     public function getRoles()
