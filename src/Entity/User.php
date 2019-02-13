@@ -5,6 +5,8 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * @ORM\Table(name="users")
@@ -49,6 +51,8 @@ class User implements UserInterface
     {
         $this->isActive = true;
         $this->username = $username;
+        $this->topics = new ArrayCollection();
+        $this->replies = new ArrayCollection();
     }
 
     public function getUsername()
@@ -99,4 +103,47 @@ class User implements UserInterface
     public function eraseCredentials()
     {
     }
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Topics", mappedBy="user")
+     */
+    private $topics;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Replies", mappedBy="user")
+     */
+    private $replies;
+
+    /**
+     * @return mixed
+     */
+    public function getTopics() : Collection
+    {
+        return $this->topics;
+    }
+
+    /**
+     * @param mixed $topics
+     */
+    public function setTopics($topics): void
+    {
+        $this->topics = $topics;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getReplies() : Collection
+    {
+        return $this->replies;
+    }
+
+    /**
+     * @param mixed $replies
+     */
+    public function setReplies($replies): void
+    {
+        $this->replies = $replies;
+    }
+
 }
