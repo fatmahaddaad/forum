@@ -60,25 +60,19 @@ class TopicsController extends AbstractController
         $topic = new Topics();
 
         $subject = $request->get('subject');
-        $date = new \DateTime();
-        $category = $this->getDoctrine()->getRepository('App\Entity\Categories')->find($request->get('category_id'));
-        $user = $this->getUser();
 
         $em = $this->getDoctrine()->getManager();
         $topic = $this->getDoctrine()->getRepository('App\Entity\Topics')->find($id);
         if (empty($topic)) {
             return new View("Topic not found", Response::HTTP_NOT_FOUND);
         }
-        elseif(empty($subject) || empty($category))
+        elseif(empty($subject))
         {
             return View::create("NULL VALUES ARE NOT ALLOWED", Response::HTTP_NOT_ACCEPTABLE);
         }
         else
         {
             $topic->setSubject($subject);
-            $topic->setCategory($category);
-            $topic->setDate($date);
-            $topic->setUser($user);
             $em->flush();
             return View::create($topic, Response::HTTP_CREATED, []);
         }
