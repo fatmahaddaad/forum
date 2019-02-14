@@ -50,8 +50,6 @@ class CategoriesController extends AbstractController
      */
     public function editCategory(Request $request, $id)
     {
-        $category = new Categories();
-
         $name = $request->get('name');
         $description = $request->get('description');
 

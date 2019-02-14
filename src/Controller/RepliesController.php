@@ -56,7 +56,6 @@ class RepliesController extends AbstractController
      */
     public function editReply(Request $request, $id)
     {
-        $reply = new Replies();
         $content = $request->get('content');
         $em = $this->getDoctrine()->getManager();
         $reply = $this->getDoctrine()->getRepository('App\Entity\Replies')->find($id);

@@ -57,8 +57,6 @@ class TopicsController extends AbstractController
      */
     public function editTopic(Request $request, $id)
     {
-        $topic = new Topics();
-
         $subject = $request->get('subject');
 
         $em = $this->getDoctrine()->getManager();
