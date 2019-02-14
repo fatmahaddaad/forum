@@ -16,3 +16,34 @@ login_check:
     methods:  [POST]
     defaults:
         _format: json
+
+addCategory:
+    path:     /addCategory
+    controller: App\Controller\CategoriesController::addCategory
+    methods:  [POST]
+    defaults:
+        _format: json
+editCategory:
+    path:     /editCategory/{id}
+    controller: App\Controller\CategoriesController::editCategory
+    methods:  [PUT]
+    defaults:
+        _format: json
+deleteCategory:
+    path:     /deleteCategory/{id}
+    controller: App\Controller\CategoriesController::deleteCategory
+    methods:  [POST]
+    defaults:
+        _format: json
+categories:
+    path:     /categories
+    controller: App\Controller\CategoriesController::categories
+    methods:  [GET]
+    defaults:
+        _format: json
+category:
+    path:     /category/{id}
+    controller: App\Controller\CategoriesController::category
+    methods:  [GET]
+    defaults:
+        _format: json
