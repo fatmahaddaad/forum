@@ -77,3 +77,33 @@ topic:
     methods:  [GET]
     defaults:
         _format: json
+addReply:
+    path:     /addReply
+    controller: App\Controller\RepliesController::addReply
+    methods:  [POST]
+    defaults:
+        _format: json
+editReply:
+    path:     /editReply/{id}
+    controller: App\Controller\RepliesController::editReply
+    methods:  [PUT]
+    defaults:
+        _format: json
+deleteReply:
+    path:     /deleteReply/{id}
+    controller: App\Controller\RepliesController::deleteReply
+    methods:  [POST]
+    defaults:
+        _format: json
+replies:
+    path:     /replies
+    controller: App\Controller\RepliesController::replies
+    methods:  [GET]
+    defaults:
+        _format: json
+reply:
+    path:     /reply/{id}
+    controller: App\Controller\RepliesController::reply
+    methods:  [GET]
+    defaults:
+        _format: json

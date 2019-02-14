@@ -99,6 +99,38 @@ security:
             pattern:  ^/topic
             stateless: true
             anonymous: true
+        addReply:
+            pattern:  ^/addReply
+            stateless: true
+            anonymous: false
+            provider: entity_provider
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+        editReply:
+            pattern:  ^/editReply
+            stateless: true
+            anonymous: false
+            provider: entity_provider
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+        deleteReply:
+            pattern:  ^/deleteReply
+            stateless: true
+            anonymous: false
+            provider: entity_provider
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+        replies:
+            pattern:  ^/replies
+            stateless: true
+            anonymous: true
+        reply:
+            pattern:  ^/reply
+            stateless: true
+            anonymous: true
 
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
@@ -114,3 +146,8 @@ security:
         - { path: ^/deleteTopic, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/topics, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/topic, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/addReply, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/editReply, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/deleteReply, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/replies, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/reply, roles: IS_AUTHENTICATED_ANONYMOUSLY }
