@@ -44,4 +44,45 @@ class Replies
      * @ORM\JoinColumn(name="topic_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $topic;
+
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    public function setContent($content): void
+    {
+        $this->content = $content;
+    }
+
+    public function getDate()
+    {
+        return $this->date;
+    }
+
+    public function setDate($date): void
+    {
+        $this->date = $date;
+    }
+
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    public function setUser($user): void
+    {
+        $this->user = $user;
+    }
+
+    public function getTopic()
+    {
+        return $this->topic;
+    }
+
+    public function setTopic($topic): void
+    {
+        $this->topic = $topic;
+    }
+
 }
