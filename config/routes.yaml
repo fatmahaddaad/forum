@@ -47,3 +47,33 @@ category:
     methods:  [GET]
     defaults:
         _format: json
+addTopic:
+    path:     /addTopic
+    controller: App\Controller\TopicsController::addTopic
+    methods:  [POST]
+    defaults:
+        _format: json
+editTopic:
+    path:     /editTopic/{id}
+    controller: App\Controller\TopicsController::editTopic
+    methods:  [PUT]
+    defaults:
+        _format: json
+deleteTopic:
+    path:     /deleteTopic/{id}
+    controller: App\Controller\TopicsController::deleteTopic
+    methods:  [POST]
+    defaults:
+        _format: json
+topics:
+    path:     /topics
+    controller: App\Controller\TopicsController::topics
+    methods:  [GET]
+    defaults:
+        _format: json
+topic:
+    path:     /topic/{id}
+    controller: App\Controller\TopicsController::topic
+    methods:  [GET]
+    defaults:
+        _format: json
