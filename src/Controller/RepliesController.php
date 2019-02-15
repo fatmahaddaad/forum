@@ -68,6 +68,10 @@ class RepliesController extends AbstractController
         }
         else
         {
+            if(!$this->hasAccess($reply->getUser()->getId(),$this->getUser()->getId()) && !$this->isAdmin($this->getUser()->getId()))
+            {
+                return View::create("FORBIDDEN", Response::HTTP_FORBIDDEN);
+            }
             $reply->setContent($content);
             $em->flush();
             return View::create($reply, Response::HTTP_CREATED, []);
@@ -88,6 +92,10 @@ class RepliesController extends AbstractController
         }
         else
         {
+            if(!$this->hasAccess($reply->getUser()->getId(),$this->getUser()->getId()) && !$this->isAdmin($this->getUser()->getId()))
+            {
+                return View::create("FORBIDDEN", Response::HTTP_FORBIDDEN);
+            }
             $em->remove($reply);
             $em->flush();
             return View::create("Reply Deleted Successfully", Response::HTTP_OK);
@@ -119,5 +127,14 @@ class RepliesController extends AbstractController
             return new View("Reply can not be found", Response::HTTP_NOT_FOUND);
         }
         return View::create($reply, Response::HTTP_OK, []);
+    }
+
+    public function hasAccess($idUser,$id){
+        return ($id==$idUser)?true:false;
+    }
+
+    public function isAdmin($idUser){
+        $user = $this->getDoctrine()->getRepository('App\Entity\User')->find($idUser);
+        return (in_array("ROLE_ADMIN" ,$user->getRoles()))?true:false;
     }
 }
