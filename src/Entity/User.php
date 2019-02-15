@@ -83,6 +83,8 @@ class User implements UserInterface
         $this->username = $username;
         $this->topics = new ArrayCollection();
         $this->replies = new ArrayCollection();
+        $this->votes = new ArrayCollection();
+        $this->comments = new ArrayCollection();
         $this->roles = array('ROLE_USER');
     }
     public function hasRole($role)
@@ -192,6 +194,48 @@ class User implements UserInterface
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Votes", mappedBy="user")
+     */
+    private $votes;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Comments", mappedBy="user")
+     */
+    private $comments;
+
+    /**
+     * @return mixed
+     */
+    public function getVotes() : Collection
+    {
+        return $this->votes;
+    }
+
+    /**
+     * @param mixed $votes
+     */
+    public function setVotes($votes): void
+    {
+        $this->votes = $votes;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getComments() : Collection
+    {
+        return $this->comments;
+    }
+
+    /**
+     * @param mixed $comments
+     */
+    public function setComments($comments): void
+    {
+        $this->comments = $comments;
     }
 
 }

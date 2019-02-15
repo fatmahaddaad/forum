@@ -85,4 +85,52 @@ class Replies
         $this->topic = $topic;
     }
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Votes", mappedBy="user")
+     */
+    private $votes;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Comments", mappedBy="user")
+     */
+    private $comments;
+
+    /**
+     * @return mixed
+     */
+    public function getVotes() : Collection
+    {
+        return $this->votes;
+    }
+
+    /**
+     * @param mixed $votes
+     */
+    public function setVotes($votes): void
+    {
+        $this->votes = $votes;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getComments() : Collection
+    {
+        return $this->comments;
+    }
+
+    /**
+     * @param mixed $comments
+     */
+    public function setComments($comments): void
+    {
+        $this->comments = $comments;
+    }
+
+    public function __construct()
+    {
+        $this->votes = new ArrayCollection();
+        $this->comments = new ArrayCollection();
+    }
+
 }
