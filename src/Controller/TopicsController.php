@@ -128,7 +128,12 @@ class TopicsController extends AbstractController
      */
     public function topic($id)
     {
-        $topic = $this->getDoctrine()->getRepository('App\Entity\Topics')->find($id);
+        $em = $this->getDoctrine()->getManager();
+        $topic = $em->getRepository('App\Entity\Topics')->find($id);
+        $views = $topic->getViews();
+        $topic->setViews($views + 1);
+        $em->persist($topic);
+        $em->flush();
         if (empty($topic)) {
             return new View("Topic can not be found", Response::HTTP_NOT_FOUND);
         }
