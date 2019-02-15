@@ -9,6 +9,7 @@
 namespace App\Controller;
 
 use FOS\RestBundle\View\View;
+use Psr\Container\ContainerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -140,6 +141,16 @@ class TopicsController extends AbstractController
         return View::create($topic, Response::HTTP_OK, []);
     }
 
+    public function countReplies($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $topic = $em->getRepository('App\Entity\Topics')->find($id);
+        $replies = $topic->getReplies();
+        if (empty($topic)) {
+            return new View("Topic can not be found", Response::HTTP_NOT_FOUND);
+        }
+        return View::create(count($replies), Response::HTTP_OK, []);
+    }
 
     public function hasAccess($idUser,$id){
         return ($id==$idUser)?true:false;

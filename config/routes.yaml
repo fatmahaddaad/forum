@@ -113,3 +113,9 @@ promoteUser:
     methods:  [PUT]
     defaults:
         _format: json
+countReplies:
+    path:     /countReplies/{id}
+    controller: App\Controller\TopicsController::countReplies
+    methods:  [GET]
+    defaults:
+        _format: json

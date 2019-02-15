@@ -139,6 +139,10 @@ security:
             guard:
                 authenticators:
                     - lexik_jwt_authentication.jwt_token_authenticator
+        countReplies:
+            pattern:  ^/countReplies
+            stateless: true
+            anonymous: true
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
@@ -159,3 +163,4 @@ security:
         - { path: ^/replies, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/reply, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/promoteUser, roles: ROLE_ADMIN }
+        - { path: ^/countReplies, roles: IS_AUTHENTICATED_ANONYMOUSLY }
