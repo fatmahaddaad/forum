@@ -186,4 +186,12 @@ class User implements UserInterface
         $this->replies = $replies;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
 }

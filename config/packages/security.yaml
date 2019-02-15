@@ -158,4 +158,4 @@ security:
         - { path: ^/deleteReply, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/replies, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/reply, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/promoteUser, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/promoteUser, roles: ROLE_ADMIN }

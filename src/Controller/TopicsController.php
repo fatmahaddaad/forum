@@ -73,6 +73,10 @@ class TopicsController extends AbstractController
         }
         else
         {
+            if(!$this->hasAccess($topic->getUser()->getId(),$this->getUser()->getId()) && !$this->isAdmin($this->getUser()->getId()))
+            {
+                return View::create("FORBIDDEN" , Response::HTTP_FORBIDDEN);
+            }
             $topic->setSubject($subject);
             $topic->setContent($content);
             $em->flush();
@@ -94,6 +98,10 @@ class TopicsController extends AbstractController
         }
         else
         {
+            if(!$this->hasAccess($topic->getUser()->getId(),$this->getUser()->getId()) && !$this->isAdmin($this->getUser()->getId()))
+            {
+                return View::create("FORBIDDEN", Response::HTTP_FORBIDDEN);
+            }
             $em->remove($topic);
             $em->flush();
             return View::create("Topic Deleted Successfully", Response::HTTP_OK);
@@ -126,4 +134,15 @@ class TopicsController extends AbstractController
         }
         return View::create($topic, Response::HTTP_OK, []);
     }
+
+
+    public function hasAccess($idUser,$id){
+        return ($id==$idUser)?true:false;
+    }
+
+    public function isAdmin($idUser){
+        $user = $this->getDoctrine()->getRepository('App\Entity\User')->find($idUser);
+        return (in_array("ROLE_ADMIN" ,$user->getRoles()))?true:false;
+    }
+
 }
