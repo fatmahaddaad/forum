@@ -117,4 +117,15 @@ class CategoriesController extends AbstractController
         }
         return View::create($category, Response::HTTP_OK, []);
     }
+
+    public function countTopics($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $category = $em->getRepository('App\Entity\Categories')->find($id);
+        $topics = $category->getTopics();
+        if (empty($category)) {
+            return new View("Category can not be found", Response::HTTP_NOT_FOUND);
+        }
+        return View::create(count($topics), Response::HTTP_OK, []);
+    }
 }

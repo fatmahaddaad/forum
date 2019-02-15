@@ -143,6 +143,10 @@ security:
             pattern:  ^/countReplies
             stateless: true
             anonymous: true
+        countTopics:
+            pattern:  ^/countTopics
+            stateless: true
+            anonymous: true
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
@@ -164,3 +168,4 @@ security:
         - { path: ^/reply, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/promoteUser, roles: ROLE_ADMIN }
         - { path: ^/countReplies, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/countTopics, roles: IS_AUTHENTICATED_ANONYMOUSLY }

@@ -119,3 +119,9 @@ countReplies:
     methods:  [GET]
     defaults:
         _format: json
+countTopics:
+    path:     /countTopics/{id}
+    controller: App\Controller\CategoriesController::countTopics
+    methods:  [GET]
+    defaults:
+        _format: json
