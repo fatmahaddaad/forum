@@ -131,14 +131,21 @@ security:
             pattern:  ^/reply
             stateless: true
             anonymous: true
-
+        promoteUser:
+            pattern:  ^/promoteUser
+            stateless: true
+            anonymous: false
+            provider: entity_provider
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
-        - { path: ^/addCategory, roles: IS_AUTHENTICATED_FULLY }
-        - { path: ^/editCategory, roles: IS_AUTHENTICATED_FULLY }
-        - { path: ^/deleteCategory, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/addCategory, roles: ROLE_ADMIN }
+        - { path: ^/editCategory, roles: ROLE_ADMIN }
+        - { path: ^/deleteCategory, roles: ROLE_ADMIN }
         - { path: ^/categories, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/category, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/addTopic, roles: IS_AUTHENTICATED_FULLY }
@@ -151,3 +158,4 @@ security:
         - { path: ^/deleteReply, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/replies, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/reply, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/promoteUser, roles: IS_AUTHENTICATED_FULLY }

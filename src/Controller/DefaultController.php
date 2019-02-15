@@ -17,11 +17,9 @@ class DefaultController extends AbstractController
         $user->setPassword($encoder->encodePassword($user, $request->get('password')));
         $user->setEmail($request->get('email'));
         $user->setDate(new \DateTime());
-
         $em = $this->getDoctrine()->getManager();
         $em->persist($user);
         $em->flush();
-
         return View::create($user, Response::HTTP_CREATED, []);
     }
 
@@ -29,5 +27,16 @@ class DefaultController extends AbstractController
     {
         $data = ['isLogged' => sprintf('Logged in as %s', $this->getUser()->getUsername())];
         return View::create($data, Response::HTTP_OK);
+    }
+
+    public function promoteUser(Request $request, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository("App\Entity\User")->find($id);
+        $user->addRole($request->get("role"));
+
+        $em->persist($user);
+        $em->flush();
+        return View::create($user, Response::HTTP_CREATED, []);
     }
 }

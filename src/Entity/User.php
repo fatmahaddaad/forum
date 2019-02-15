@@ -57,9 +57,6 @@ class User implements UserInterface
     public function addRole($role)
     {
         $role = strtoupper($role);
-        if ($role === static::ROLE_DEFAULT) {
-            return $this;
-        }
 
         if (!in_array($role, $this->roles, true)) {
             $this->roles[] = $role;

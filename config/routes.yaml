@@ -107,3 +107,9 @@ reply:
     methods:  [GET]
     defaults:
         _format: json
+promoteUser:
+    path:     /promoteUser/{id}
+    controller: App\Controller\DefaultController::promoteUser
+    methods:  [PUT]
+    defaults:
+        _format: json
