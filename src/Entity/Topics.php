@@ -31,6 +31,11 @@ class Topics
     private $subject;
 
     /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $content;
+
+    /**
      * @ORM\Column(type="datetime")
      */
     private $date;
@@ -69,6 +74,16 @@ class Topics
     public function setSubject($subject): void
     {
         $this->subject = $subject;
+    }
+
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    public function setContent($content): void
+    {
+        $this->content = $content;
     }
 
     public function getDate()

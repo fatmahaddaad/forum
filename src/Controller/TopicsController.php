@@ -27,6 +27,7 @@ class TopicsController extends AbstractController
     {
         $topic = new Topics();
         $subject = $request->get('subject');
+        $content = $request->get('content');
         $date = new \DateTime();
         $category = $this->getDoctrine()->getRepository('App\Entity\Categories')->find($request->get('category_id'));
         $user = $this->getUser();
@@ -36,6 +37,7 @@ class TopicsController extends AbstractController
         }
         else {
             $topic->setSubject($subject);
+            $topic->setContent($content);
             $topic->setCategory($category);
             $topic->setDate($date);
             $topic->setUser($user);
@@ -58,19 +60,21 @@ class TopicsController extends AbstractController
     public function editTopic(Request $request, $id)
     {
         $subject = $request->get('subject');
+        $content = $request->get('content');
 
         $em = $this->getDoctrine()->getManager();
         $topic = $this->getDoctrine()->getRepository('App\Entity\Topics')->find($id);
         if (empty($topic)) {
             return new View("Topic not found", Response::HTTP_NOT_FOUND);
         }
-        elseif(empty($subject))
+        elseif(empty($subject)|| empty($content))
         {
             return View::create("NULL VALUES ARE NOT ALLOWED", Response::HTTP_NOT_ACCEPTABLE);
         }
         else
         {
             $topic->setSubject($subject);
+            $topic->setContent($content);
             $em->flush();
             return View::create($topic, Response::HTTP_CREATED, []);
         }
