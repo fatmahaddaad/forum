@@ -41,6 +41,11 @@ class Topics
     private $date;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    private $views;
+
+    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")
      */
@@ -96,6 +101,16 @@ class Topics
         $this->date = $date;
     }
 
+    public function getViews()
+    {
+        return $this->views;
+    }
+
+    public function setViews($views): void
+    {
+        $this->views = $views;
+    }
+
     public function getUser()
     {
         return $this->user;
@@ -129,6 +144,7 @@ class Topics
     public function __construct()
     {
         $this->replies = new ArrayCollection();
+        $this->views = 0;
     }
 
 }
