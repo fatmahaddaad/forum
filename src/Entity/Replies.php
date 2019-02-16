@@ -34,6 +34,11 @@ class Replies
     private $date;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isCorrect;
+
+    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")
      */
@@ -131,6 +136,17 @@ class Replies
     {
         $this->votes = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->isCorrect = false;
+    }
+
+    public function getIsCorrect()
+    {
+        return $this->isCorrect;
+    }
+
+    public function setIsCorrect($isCorrect): void
+    {
+        $this->isCorrect = $isCorrect;
     }
 
 }
