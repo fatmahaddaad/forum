@@ -147,6 +147,38 @@ security:
             pattern:  ^/countTopics
             stateless: true
             anonymous: true
+        addComment:
+            pattern:  ^/addComment
+            stateless: true
+            anonymous: false
+            provider: entity_provider
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+        editComment:
+            pattern:  ^/editComment
+            stateless: true
+            anonymous: false
+            provider: entity_provider
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+        deleteComment:
+            pattern:  ^/deleteComment
+            stateless: true
+            anonymous: false
+            provider: entity_provider
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+        comments:
+            pattern:  ^/comments
+            stateless: true
+            anonymous: true
+        comment:
+            pattern:  ^/comment
+            stateless: true
+            anonymous: true
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
@@ -169,3 +201,8 @@ security:
         - { path: ^/promoteUser, roles: ROLE_ADMIN }
         - { path: ^/countReplies, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/countTopics, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/addComment, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/editComment, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/deleteComment, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/comments, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/comment, roles: IS_AUTHENTICATED_ANONYMOUSLY }

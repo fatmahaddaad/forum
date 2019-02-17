@@ -125,3 +125,33 @@ countTopics:
     methods:  [GET]
     defaults:
         _format: json
+addComment:
+    path:     /addComment
+    controller: App\Controller\CommentsController::addComment
+    methods:  [POST]
+    defaults:
+        _format: json
+editComment:
+    path:     /editComment/{id}
+    controller: App\Controller\CommentsController::editComment
+    methods:  [PUT]
+    defaults:
+        _format: json
+deleteComment:
+    path:     /deleteComment/{id}
+    controller: App\Controller\CommentsController::deleteComment
+    methods:  [POST]
+    defaults:
+        _format: json
+comments:
+    path:     /comments
+    controller: App\Controller\CommentsController::comments
+    methods:  [GET]
+    defaults:
+        _format: json
+comment:
+    path:     /comment/{id}
+    controller: App\Controller\CommentsController::comment
+    methods:  [GET]
+    defaults:
+        _format: json
