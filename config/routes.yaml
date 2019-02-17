@@ -155,3 +155,15 @@ comment:
     methods:  [GET]
     defaults:
         _format: json
+addVote:
+    path:     /addVote
+    controller: App\Controller\VotesController::addVote
+    methods:  [POST]
+    defaults:
+        _format: json
+countVotes:
+    path:     /countVotes/{id}
+    controller: App\Controller\RepliesController::countVotes
+    methods:  [GET]
+    defaults:
+        _format: json

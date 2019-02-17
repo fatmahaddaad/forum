@@ -129,6 +129,22 @@ class RepliesController extends AbstractController
         return View::create($reply, Response::HTTP_OK, []);
     }
 
+    public function countVotes($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $votes = $em->getRepository('App\Entity\Votes')->findBy(array("reply" => $id));
+
+        if (empty($votes)) {
+            return new View(0, Response::HTTP_NOT_FOUND);
+        }
+        $score = 0;
+        foreach ($votes as $vote)
+        {
+            $score += $vote->getVote();
+        }
+        return View::create($score , Response::HTTP_OK, []);
+    }
+
     public function hasAccess($idUser,$id){
         return ($id==$idUser)?true:false;
     }
