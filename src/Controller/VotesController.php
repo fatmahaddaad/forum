@@ -44,6 +44,10 @@ class VotesController extends AbstractController
                 return $this->editVote($votes->getId());
             }
         }
+        elseif ($this->replyOwner($user->getId(),$reply->getUser()->getId()))
+        {
+            return View::create("You can not vote your own reply", Response::HTTP_NOT_ACCEPTABLE);
+        }
         else {
             $vote->setVote($vote_val);
             $vote->setReply($reply);
@@ -64,6 +68,10 @@ class VotesController extends AbstractController
         return (!empty($votes))?true:false;
     }
 
+    public function replyOwner($idUser,$id)
+    {
+        return ($id==$idUser)?true:false;
+    }
     public function editVote($id) {
 
         $em = $this->getDoctrine()->getManager();
