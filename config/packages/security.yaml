@@ -191,6 +191,14 @@ security:
             pattern:  ^/countVotes
             stateless: true
             anonymous: true
+        setCorrectAnswer:
+            pattern:  ^/setCorrectAnswer
+            stateless: true
+            anonymous: false
+            provider: entity_provider
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
@@ -220,3 +228,4 @@ security:
         - { path: ^/comment, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/addVote, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/countVotes, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/setCorrectAnswer, roles: IS_AUTHENTICATED_FULLY }

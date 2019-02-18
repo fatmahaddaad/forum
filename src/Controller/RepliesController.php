@@ -153,4 +153,33 @@ class RepliesController extends AbstractController
         $user = $this->getDoctrine()->getRepository('App\Entity\User')->find($idUser);
         return (in_array("ROLE_ADMIN" ,$user->getRoles()))?true:false;
     }
+
+    public function setCorrectAnswer($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $reply = $this->getDoctrine()->getRepository('App\Entity\Replies')->find($id);
+        if (empty($reply)) {
+            return new View("Reply not found", Response::HTTP_NOT_FOUND);
+        }
+        elseif($reply->getIsCorrect() == true)
+        {
+            if(!$this->hasAccess($reply->getTopic()->getUser()->getId(),$this->getUser()->getId()) && !$this->isAdmin($this->getUser()->getId()))
+            {
+                return View::create("FORBIDDEN", Response::HTTP_FORBIDDEN);
+            }
+            $reply->setIsCorrect(false);
+            $em->flush();
+            return View::create($reply, Response::HTTP_CREATED, []);
+        }
+        else
+        {
+            if(!$this->hasAccess($reply->getTopic()->getUser()->getId(),$this->getUser()->getId()) && !$this->isAdmin($this->getUser()->getId()))
+            {
+                return View::create("FORBIDDEN", Response::HTTP_FORBIDDEN);
+            }
+            $reply->setIsCorrect(true);
+            $em->flush();
+            return View::create($reply, Response::HTTP_CREATED, []);
+        }
+    }
 }

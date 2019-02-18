@@ -167,3 +167,9 @@ countVotes:
     methods:  [GET]
     defaults:
         _format: json
+setCorrectAnswer:
+    path:     /setCorrectAnswer/{id}
+    controller: App\Controller\RepliesController::setCorrectAnswer
+    methods:  [PUT]
+    defaults:
+        _format: json
