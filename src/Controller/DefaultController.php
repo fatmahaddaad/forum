@@ -33,8 +33,7 @@ class DefaultController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
         $user = $em->getRepository("App\Entity\User")->find($id);
-        $user->addRole($request->get("role"));
-
+        $user->addRole("ROLE_MODERATOR");
         $em->persist($user);
         $em->flush();
         return View::create($user, Response::HTTP_CREATED, []);
