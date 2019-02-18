@@ -238,4 +238,14 @@ class User implements UserInterface
         $this->comments = $comments;
     }
 
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive($isActive): void
+    {
+        $this->isActive = $isActive;
+    }
+
 }
