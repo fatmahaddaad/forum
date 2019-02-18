@@ -179,3 +179,27 @@ setUserStatus:
     methods:  [PUT]
     defaults:
         _format: json
+setResolved:
+    path:     /setResolved/{id}
+    controller: App\Controller\TopicsController::setResolved
+    methods:  [PUT]
+    defaults:
+        _format: json
+setUnresolved:
+    path:     /setUnresolved/{id}
+    controller: App\Controller\TopicsController::setUnresolved
+    methods:  [PUT]
+    defaults:
+        _format: json
+setTopicClose:
+    path:     /setTopicClose/{id}
+    controller: App\Controller\TopicsController::setTopicClose
+    methods:  [PUT]
+    defaults:
+        _format: json
+setTopicOpen:
+    path:     /setTopicOpen/{id}
+    controller: App\Controller\TopicsController::setTopicOpen
+    methods:  [PUT]
+    defaults:
+        _format: json

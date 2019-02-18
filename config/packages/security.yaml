@@ -211,6 +211,38 @@ security:
             guard:
                 authenticators:
                     - lexik_jwt_authentication.jwt_token_authenticator
+        setResolved:
+            pattern:  ^/setResolved
+            stateless: true
+            anonymous: false
+            provider: entity_provider
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+        setUnresolved:
+            pattern:  ^/setUnresolved
+            stateless: true
+            anonymous: false
+            provider: entity_provider
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+        setTopicClose:
+            pattern:  ^/setTopicClose
+            stateless: true
+            anonymous: false
+            provider: entity_provider
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+        setTopicOpen:
+            pattern:  ^/setTopicOpen
+            stateless: true
+            anonymous: false
+            provider: entity_provider
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
@@ -242,3 +274,7 @@ security:
         - { path: ^/countVotes, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/setCorrectAnswer, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/setUserStatus, roles: ROLE_MODERATOR }
+        - { path: ^/setResolved, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/setUnresolved, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/setTopicClose, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/setTopicOpen, roles: IS_AUTHENTICATED_FULLY }

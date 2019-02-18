@@ -165,4 +165,123 @@ class TopicsController extends AbstractController
         $user = $this->getDoctrine()->getRepository('App\Entity\User')->find($idUser);
         return (in_array("ROLE_MODERATOR" ,$user->getRoles()))?true:false;
     }
+
+
+    public function setResolved($id) {
+        $em = $this->getDoctrine()->getManager();
+        $topic = $this->getDoctrine()->getRepository('App\Entity\Topics')->find($id);
+        if (empty($topic)) {
+            return new View("Topic not found", Response::HTTP_NOT_FOUND);
+        }
+        else
+        {
+            if(!$this->hasAccess($topic->getUser()->getId(),$this->getUser()->getId()) && !$this->isAdmin($this->getUser()->getId()) && !$this->isModerator($this->getUser()->getId()))
+            {
+                return View::create("FORBIDDEN", Response::HTTP_FORBIDDEN);
+            }
+
+            if ($topic->hasStatu("RESOLVED"))
+            {
+                return View::create("Topic already resolved", Response::HTTP_BAD_REQUEST, []);
+            }
+            else
+            {
+                $topic->addStatu('RESOLVED');
+                $topic->removeStatu('UNRESOLVED');
+                $em->flush();
+                return View::create($topic, Response::HTTP_CREATED, []);
+            }
+
+        }
+    }
+
+    public function setUnresolved($id) {
+        $em = $this->getDoctrine()->getManager();
+        $topic = $this->getDoctrine()->getRepository('App\Entity\Topics')->find($id);
+        if (empty($topic)) {
+            return new View("Topic not found", Response::HTTP_NOT_FOUND);
+        }
+        else
+        {
+            if(!$this->hasAccess($topic->getUser()->getId(),$this->getUser()->getId()) && !$this->isAdmin($this->getUser()->getId()) && !$this->isModerator($this->getUser()->getId()))
+            {
+                return View::create("FORBIDDEN", Response::HTTP_FORBIDDEN);
+            }
+            else
+            {
+
+                if ($topic->hasStatu("UNRESOLVED"))
+                {
+                    return View::create("Topic already unresolved", Response::HTTP_BAD_REQUEST, []);
+                }
+                else
+                {
+                    $topic->addStatu('UNRESOLVED');
+                    $topic->removeStatu('RESOLVED');
+                    $em->flush();
+                    return View::create($topic->getStatus(), Response::HTTP_CREATED, []);
+                }
+            }
+
+
+        }
+    }
+
+    public function setTopicClose($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $topic = $this->getDoctrine()->getRepository('App\Entity\Topics')->find($id);
+        if (empty($topic)) {
+            return new View("Topic not found", Response::HTTP_NOT_FOUND);
+        }
+        else
+        {
+            if(!$this->hasAccess($topic->getUser()->getId(),$this->getUser()->getId()) && !$this->isAdmin($this->getUser()->getId()) && !$this->isModerator($this->getUser()->getId()))
+            {
+                return View::create("FORBIDDEN", Response::HTTP_FORBIDDEN);
+            }
+
+            if ($topic->hasStatu("CLOSED") && !$topic->hasStatu("OPEN"))
+            {
+                return View::create("Topic already closed", Response::HTTP_BAD_REQUEST, []);
+            }
+            else
+            {
+                $topic->setIsOpen(false);
+                $topic->addStatu('CLOSED');
+                $topic->removeStatu('OPEN');
+                $em->flush();
+                return View::create($topic, Response::HTTP_CREATED, []);
+            }
+        }
+    }
+
+    public function setTopicOpen($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $topic = $this->getDoctrine()->getRepository('App\Entity\Topics')->find($id);
+        if (empty($topic)) {
+            return new View("Topic not found", Response::HTTP_NOT_FOUND);
+        }
+        else
+        {
+            if(!$this->hasAccess($topic->getUser()->getId(),$this->getUser()->getId()) && !$this->isAdmin($this->getUser()->getId()) && !$this->isModerator($this->getUser()->getId()))
+            {
+                return View::create("FORBIDDEN", Response::HTTP_FORBIDDEN);
+            }
+
+            if (!$topic->hasStatu("CLOSED") && $topic->hasStatu("OPEN"))
+            {
+                return View::create("Topic already open", Response::HTTP_BAD_REQUEST, []);
+            }
+            else
+            {
+                $topic->setIsOpen(true);
+                $topic->removeStatu('CLOSED');
+                $topic->addStatu('OPEN');
+                $em->flush();
+                return View::create($topic, Response::HTTP_CREATED, []);
+            }
+        }
+    }
 }

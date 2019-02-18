@@ -157,13 +157,12 @@ class Topics
         $this->replies = new ArrayCollection();
         $this->views = 0;
         $this->isOpen = true;
-        $this->status = array('open', 'unanswered');
+        $this->status = array('OPEN', 'UNANSWERED', 'UNRESOLVED');
     }
 
     public function getStatus()
     {
-        $status[] = $this->status;
-        return array_unique($status);
+        return array_unique($this->status);
     }
 
     public function addStatu($statu)

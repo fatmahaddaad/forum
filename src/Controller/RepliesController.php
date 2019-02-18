@@ -35,6 +35,12 @@ class RepliesController extends AbstractController
             return View::create("NULL VALUES ARE NOT ALLOWED", Response::HTTP_NOT_ACCEPTABLE);
         }
         else {
+            if (count($topic->getReplies()) == 0) {
+                $em = $this->getDoctrine()->getManager();
+                $topic->removeStatu('UNANSWERED');
+                $topic->addStatu('ANSWERED');
+                $em->flush();
+            }
             $reply->setContent($content);
             $reply->setTopic($topic);
             $reply->setDate($date);
