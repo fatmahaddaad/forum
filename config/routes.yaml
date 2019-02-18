@@ -173,3 +173,9 @@ setCorrectAnswer:
     methods:  [PUT]
     defaults:
         _format: json
+setUserStatus:
+    path:     /setUserStatus/{id}
+    controller: App\Controller\ModeratorController::setUserStatus
+    methods:  [PUT]
+    defaults:
+        _format: json

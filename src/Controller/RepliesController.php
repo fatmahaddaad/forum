@@ -68,7 +68,7 @@ class RepliesController extends AbstractController
         }
         else
         {
-            if(!$this->hasAccess($reply->getUser()->getId(),$this->getUser()->getId()) && !$this->isAdmin($this->getUser()->getId()))
+            if(!$this->hasAccess($reply->getUser()->getId(),$this->getUser()->getId()) && !$this->isAdmin($this->getUser()->getId()) && !$this->isModerator($this->getUser()->getId()))
             {
                 return View::create("FORBIDDEN", Response::HTTP_FORBIDDEN);
             }
@@ -92,7 +92,7 @@ class RepliesController extends AbstractController
         }
         else
         {
-            if(!$this->hasAccess($reply->getUser()->getId(),$this->getUser()->getId()) && !$this->isAdmin($this->getUser()->getId()))
+            if(!$this->hasAccess($reply->getUser()->getId(),$this->getUser()->getId()) && !$this->isAdmin($this->getUser()->getId()) && !$this->isModerator($this->getUser()->getId()))
             {
                 return View::create("FORBIDDEN", Response::HTTP_FORBIDDEN);
             }
@@ -152,6 +152,11 @@ class RepliesController extends AbstractController
     public function isAdmin($idUser){
         $user = $this->getDoctrine()->getRepository('App\Entity\User')->find($idUser);
         return (in_array("ROLE_ADMIN" ,$user->getRoles()))?true:false;
+    }
+
+    public function isModerator($idUser){
+        $user = $this->getDoctrine()->getRepository('App\Entity\User')->find($idUser);
+        return (in_array("ROLE_MODERATOR" ,$user->getRoles()))?true:false;
     }
 
     public function setCorrectAnswer($id)

@@ -203,13 +203,21 @@ security:
             guard:
                 authenticators:
                     - lexik_jwt_authentication.jwt_token_authenticator
+        setUserStatus:
+            pattern:  ^/setUserStatus
+            stateless: true
+            anonymous: false
+            provider: entity_provider
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
-        - { path: ^/addCategory, roles: ROLE_ADMIN }
-        - { path: ^/editCategory, roles: ROLE_ADMIN }
-        - { path: ^/deleteCategory, roles: ROLE_ADMIN }
+        - { path: ^/addCategory, roles: [ROLE_ADMIN, ROLE_MODERATOR] }
+        - { path: ^/editCategory, roles: [ROLE_ADMIN, ROLE_MODERATOR] }
+        - { path: ^/deleteCategory, roles: [ROLE_ADMIN, ROLE_MODERATOR] }
         - { path: ^/categories, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/category, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/addTopic, roles: IS_AUTHENTICATED_FULLY }
@@ -233,3 +241,4 @@ security:
         - { path: ^/addVote, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/countVotes, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/setCorrectAnswer, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/setUserStatus, roles: ROLE_MODERATOR }
