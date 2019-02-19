@@ -14,9 +14,18 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class UserController extends AbstractController
 {
+    private $params;
+
+    public function __construct(ParameterBagInterface $params)
+    {
+        $this->params = $params;
+    }
+
     public function totalPosts($id)
     {
         $user = $this->getDoctrine()->getRepository('App\Entity\User')->find($id);
@@ -69,6 +78,40 @@ class UserController extends AbstractController
 
     }
 
+    public function setProfilePicture($id, Request $request)
+    {
+        $user = $this->getDoctrine()->getRepository('App\Entity\User')->find($id);
+        if (empty($user)) {
+            return new View("User can not be found", Response::HTTP_NOT_FOUND);
+        }
+
+        if (!$this->hasAccess($user->getId(),$this->getUser()->getId()))
+        {
+            return View::create("FORBIDDEN", Response::HTTP_FORBIDDEN);
+        }
+        try {
+            $file = $request->files->get( 'picture' );
+            $fileName = md5 ( uniqid () ) . '.' . $file->guessExtension ();
+            $original_name = $file->getClientOriginalName ();
+            $file->move ( $this->params->get( 'app.path.profile_images' ), $fileName );
+
+            $user->setImage($fileName);
+            $user->setUpdatedAt(new \DateTime());
+            $em = $this->getDoctrine()->getManager();
+            $em->flush();
+            $array = array (
+                'status' => 1,
+                'entity' => $user,
+                'param' => $this->params->get('app.path.profile_images')
+            );
+            $response = View::create($array, Response::HTTP_OK, []);
+            return $response;
+        } catch ( Exception $e ) {
+            $array = array('status'=> 0 );
+            $response = View::create($array, Response::HTTP_BAD_REQUEST, []);
+            return $response;
+        }
+    }
     public function hasAccess($idUser,$id){
         return ($id==$idUser)?true:false;
     }

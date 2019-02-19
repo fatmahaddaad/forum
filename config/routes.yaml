@@ -221,3 +221,9 @@ passwordChange:
     methods:  [PUT]
     defaults:
         _format: json
+setProfilePicture:
+    path:     /setProfilePicture/{id}
+    controller: App\Controller\UserController::setProfilePicture
+    methods:  [POST]
+    defaults:
+        _format: json
