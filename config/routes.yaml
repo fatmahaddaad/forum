@@ -203,3 +203,9 @@ setTopicOpen:
     methods:  [PUT]
     defaults:
         _format: json
+totalPosts:
+    path:     /totalPosts/{id}
+    controller: App\Controller\UserController::totalPosts
+    methods:  [GET]
+    defaults:
+        _format: json

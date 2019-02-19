@@ -243,6 +243,10 @@ security:
             guard:
                 authenticators:
                     - lexik_jwt_authentication.jwt_token_authenticator
+        totalPosts:
+            pattern:  ^/totalPosts
+            stateless: true
+            anonymous: true
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
@@ -278,3 +282,4 @@ security:
         - { path: ^/setUnresolved, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/setTopicClose, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/setTopicOpen, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/totalPosts, roles: IS_AUTHENTICATED_ANONYMOUSLY }
