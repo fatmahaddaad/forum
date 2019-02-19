@@ -267,6 +267,14 @@ security:
             guard:
                 authenticators:
                     - lexik_jwt_authentication.jwt_token_authenticator
+        editProfile:
+            pattern:  ^/editProfile
+            stateless: true
+            anonymous: false
+            provider: entity_provider
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
@@ -306,3 +314,4 @@ security:
         - { path: ^/allTotalPosts, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/passwordChange, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/setProfilePicture, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/editProfile, roles: IS_AUTHENTICATED_FULLY }

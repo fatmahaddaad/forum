@@ -227,3 +227,9 @@ setProfilePicture:
     methods:  [POST]
     defaults:
         _format: json
+editProfile:
+    path:     /editProfile/{id}
+    controller: App\Controller\UserController::editProfile
+    methods:  [PUT]
+    defaults:
+        _format: json

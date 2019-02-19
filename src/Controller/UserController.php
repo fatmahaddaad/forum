@@ -112,6 +112,35 @@ class UserController extends AbstractController
             return $response;
         }
     }
+
+    public function editProfile(Request $request, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $user = $this->getDoctrine()->getRepository('App\Entity\User')->find($id);
+        if (empty($user)) {
+            return new View("User can not be found", Response::HTTP_NOT_FOUND);
+        }
+
+        if (!$this->hasAccess($user->getId(),$this->getUser()->getId()))
+        {
+            return View::create("FORBIDDEN", Response::HTTP_FORBIDDEN);
+        }
+        $bio = $request->get( 'bio' );
+        $birthdate = new \DateTime($request->get( 'birthdate' ));
+        $company = $request->get( 'company' );
+        $fullname = $request->get( 'fullname' );
+        $website = $request->get( 'website' );
+        $user->setBio($bio);
+        $user->setBirthdate($birthdate);
+        $user->setCompany($company);
+        $user->setFullname($fullname);
+        $user->setWebsite($website);
+
+        $em->flush();
+        return View::create($user, Response::HTTP_CREATED, []);
+
+    }
+
     public function hasAccess($idUser,$id){
         return ($id==$idUser)?true:false;
     }

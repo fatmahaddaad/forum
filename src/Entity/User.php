@@ -158,9 +158,6 @@ class User implements UserInterface
      */
     private $replies;
 
-    /**
-     * @return mixed
-     */
     public function getTopics() : Collection
     {
         return $this->topics;
@@ -174,9 +171,6 @@ class User implements UserInterface
         $this->topics = $topics;
     }
 
-    /**
-     * @return mixed
-     */
     public function getReplies() : Collection
     {
         return $this->replies;
@@ -190,9 +184,6 @@ class User implements UserInterface
         $this->replies = $replies;
     }
 
-    /**
-     * @return mixed
-     */
     public function getId()
     {
         return $this->id;
@@ -208,9 +199,6 @@ class User implements UserInterface
      */
     private $comments;
 
-    /**
-     * @return mixed
-     */
     public function getVotes() : Collection
     {
         return $this->votes;
@@ -224,9 +212,6 @@ class User implements UserInterface
         $this->votes = $votes;
     }
 
-    /**
-     * @return mixed
-     */
     public function getComments() : Collection
     {
         return $this->comments;
@@ -317,4 +302,78 @@ class User implements UserInterface
         return $this->image;
     }
 
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $bio;
+
+    /**
+     * @ORM\Column(type="datetime", name="birthdate", nullable=true)
+     */
+    private $birthdate;
+
+    /**
+     * @ORM\Column(type="string", length=225, nullable=true)
+     */
+    private $company;
+
+    /**
+     * @ORM\Column(type="string", length=225, nullable=true)
+     */
+    private $fullname;
+
+    /**
+     * @ORM\Column(type="string", length=225, nullable=true)
+     */
+    private $website;
+
+    public function getBio()
+    {
+        return $this->bio;
+    }
+
+    public function setBio($bio): void
+    {
+        $this->bio = $bio;
+    }
+
+    public function getBirthdate()
+    {
+        return $this->birthdate;
+    }
+
+    public function setBirthdate($birthdate): void
+    {
+        $this->birthdate = $birthdate;
+    }
+
+    public function getCompany()
+    {
+        return $this->company;
+    }
+
+    public function setCompany($company): void
+    {
+        $this->company = $company;
+    }
+
+    public function getFullname()
+    {
+        return $this->fullname;
+    }
+
+    public function setFullname($fullname): void
+    {
+        $this->fullname = $fullname;
+    }
+
+    public function getWebsite()
+    {
+        return $this->website;
+    }
+
+    public function setWebsite($website): void
+    {
+        $this->website = $website;
+    }
 }
