@@ -148,4 +148,41 @@ class UserController extends AbstractController
     public function hasAccess($idUser,$id){
         return ($id==$idUser)?true:false;
     }
+
+    public function userShow($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository('App\Entity\User')->find($id);
+
+        if (empty($user)) {
+            return new View("User can not be found", Response::HTTP_NOT_FOUND);
+        }
+        $data = array(
+                    "topics" => $user->getTopics(),
+                    "replies" => $user->getReplies(),
+                    "comments" => $user->getComments(),
+                    "picture" => $user->getImage(),
+                    "bio" => $user->getBio(),
+                    "birthdate" => $user->getBirthdate(),
+                    "company" => $user->getCompany(),
+                    "fullname"=> $user->getFullname()
+                );
+
+        return View::create($data, Response::HTTP_OK, []);
+    }
+
+    public function profileShow($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository('App\Entity\User')->find($id);
+
+        if (empty($user)) {
+            return new View("User can not be found", Response::HTTP_NOT_FOUND);
+        }
+        if (!$this->hasAccess($user->getId(),$this->getUser()->getId()))
+        {
+            return View::create("FORBIDDEN", Response::HTTP_FORBIDDEN);
+        }
+        return View::create($user, Response::HTTP_OK, []);
+    }
 }

@@ -233,3 +233,15 @@ editProfile:
     methods:  [PUT]
     defaults:
         _format: json
+userShow:
+    path:     /userShow/{id}
+    controller: App\Controller\UserController::userShow
+    methods:  [GET]
+    defaults:
+        _format: json
+profileShow:
+    path:     /profileShow/{id}
+    controller: App\Controller\UserController::profileShow
+    methods:  [GET]
+    defaults:
+        _format: json
