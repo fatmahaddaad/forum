@@ -245,3 +245,9 @@ profileShow:
     methods:  [GET]
     defaults:
         _format: json
+removeProfilePicture:
+    path:     /removeProfilePicture/{id}
+    controller: App\Controller\UserController::removeProfilePicture
+    methods:  [POST]
+    defaults:
+        _format: json

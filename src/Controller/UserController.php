@@ -16,6 +16,8 @@ use App\Entity\User;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
 class UserController extends AbstractController
 {
@@ -184,5 +186,43 @@ class UserController extends AbstractController
             return View::create("FORBIDDEN", Response::HTTP_FORBIDDEN);
         }
         return View::create($user, Response::HTTP_OK, []);
+    }
+
+    public function removeProfilePicture($id)
+    {
+        $fileSystem = new Filesystem();
+        $user = $this->getDoctrine()->getRepository('App\Entity\User')->find($id);
+        if (empty($user)) {
+            return new View("User can not be found", Response::HTTP_NOT_FOUND);
+        }
+
+        if (!$this->hasAccess($user->getId(),$this->getUser()->getId()))
+        {
+            return View::create("FORBIDDEN", Response::HTTP_FORBIDDEN);
+        }
+        try {
+            $file = $user->getImage();
+            if (empty($file))
+            {
+                return View::create("Profile picture can not be found", Response::HTTP_BAD_REQUEST, []);
+            }
+
+            $fileSystem->remove($this->params->get('app.path.profile_images')."/".$file);
+            $user->setImage("");
+            $user->setUpdatedAt(new \DateTime());
+            $em = $this->getDoctrine()->getManager();
+            $em->flush();
+            $array = array (
+                'status' => 1,
+                'entity' => $user,
+                'param' => $this->params->get('app.path.profile_images')
+            );
+            $response = View::create($array, Response::HTTP_OK, []);
+            return $response;
+        } catch ( Exception $e ) {
+            $array = array('status'=> 0 );
+            $response = View::create($array, Response::HTTP_BAD_REQUEST, []);
+            return $response;
+        }
     }
 }
