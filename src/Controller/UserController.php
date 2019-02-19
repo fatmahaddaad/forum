@@ -91,6 +91,10 @@ class UserController extends AbstractController
         }
         try {
             $file = $request->files->get( 'picture' );
+            if (empty($file))
+            {
+                return View::create("Null value can not be send", Response::HTTP_BAD_REQUEST, []);
+            }
             $fileName = md5 ( uniqid () ) . '.' . $file->guessExtension ();
             $original_name = $file->getClientOriginalName ();
             $file->move ( $this->params->get( 'app.path.profile_images' ), $fileName );
