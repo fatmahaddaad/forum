@@ -209,3 +209,9 @@ totalPosts:
     methods:  [GET]
     defaults:
         _format: json
+allTotalPosts:
+    path:     /allTotalPosts
+    controller: App\Controller\DefaultController::allTotalPosts
+    methods:  [GET]
+    defaults:
+        _format: json

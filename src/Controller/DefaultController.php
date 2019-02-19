@@ -38,4 +38,14 @@ class DefaultController extends AbstractController
         $em->flush();
         return View::create($user, Response::HTTP_CREATED, []);
     }
+
+    public function allTotalPosts()
+    {
+        $topics = count($this->getDoctrine()->getRepository('App\Entity\Topics')->findAll());
+        $replies = count($this->getDoctrine()->getRepository('App\Entity\Replies')->findAll());
+        $comments = count($this->getDoctrine()->getRepository('App\Entity\Comments')->findAll());
+        $posts = $topics + $replies + $comments;
+        $result = array(["posts"=>$posts, "topics"=> $topics,"replies"=>$replies,"comments"=>$comments]);
+        return View::create($result, Response::HTTP_OK, []);
+    }
 }
