@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Entity\User;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserController extends AbstractController
 {
@@ -28,5 +29,31 @@ class UserController extends AbstractController
         $posts = $topics + $replies + $comments;
         $result = array(["user"=> $user->getUsername(),"posts"=>$posts, "topics"=> $topics,"replies"=>$replies,"comments"=>$comments]);
         return View::create($result, Response::HTTP_OK, []);
+    }
+
+    public function passwordChange(Request $request, $id, UserPasswordEncoderInterface $encoder)
+    {
+
+        $em = $this->getDoctrine()->getManager();
+        $user = $this->getDoctrine()->getRepository('App\Entity\User')->find($id);
+        if (empty($user)) {
+            return new View("User can not be found", Response::HTTP_NOT_FOUND);
+        }
+        else
+        {
+            if (!$this->hasAccess($user->getId(),$this->getUser()->getId()))
+            {
+                return View::create("FORBIDDEN", Response::HTTP_FORBIDDEN);
+            }
+            $password = $encoder->encodePassword($user, $request->get('password'));
+            $user->setPassword($password);
+            $em->flush();
+            return View::create($user, Response::HTTP_OK, []);
+        }
+
+    }
+
+    public function hasAccess($idUser,$id){
+        return ($id==$idUser)?true:false;
     }
 }

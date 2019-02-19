@@ -215,3 +215,9 @@ allTotalPosts:
     methods:  [GET]
     defaults:
         _format: json
+passwordChange:
+    path:     /passwordChange/{id}
+    controller: App\Controller\UserController::passwordChange
+    methods:  [PUT]
+    defaults:
+        _format: json
