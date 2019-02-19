@@ -36,19 +36,35 @@ class UserController extends AbstractController
 
         $em = $this->getDoctrine()->getManager();
         $user = $this->getDoctrine()->getRepository('App\Entity\User')->find($id);
+        if (!$this->hasAccess($user->getId(),$this->getUser()->getId()))
+        {
+            return View::create("FORBIDDEN", Response::HTTP_FORBIDDEN);
+        }
+
         if (empty($user)) {
             return new View("User can not be found", Response::HTTP_NOT_FOUND);
         }
         else
         {
-            if (!$this->hasAccess($user->getId(),$this->getUser()->getId()))
-            {
-                return View::create("FORBIDDEN", Response::HTTP_FORBIDDEN);
+            $old_pwd = $request->get('old_password');
+            $checkPass = $encoder->isPasswordValid($user, $old_pwd);
+            if($checkPass === true) {
+                $new_pwd = $request->get('new_password');
+                $new_pwd_confirm = $request->get('new_password_confirm');
+                if ($new_pwd == $new_pwd_confirm)
+                {
+                    $password = $encoder->encodePassword($user, $new_pwd);
+                    $user->setPassword($password);
+                    $em->flush();
+                    return View::create($user, Response::HTTP_OK, []);
+                }
+                else
+                {
+                    return View::create("Your password and confirmation password do not match ", Response::HTTP_NOT_ACCEPTABLE, []);
+                }
+            } else {
+                return View::create("The old password you have entered is incorrect", Response::HTTP_NOT_ACCEPTABLE, []);
             }
-            $password = $encoder->encodePassword($user, $request->get('password'));
-            $user->setPassword($password);
-            $em->flush();
-            return View::create($user, Response::HTTP_OK, []);
         }
 
     }
