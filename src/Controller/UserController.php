@@ -18,6 +18,11 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc as ApiDoc;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Annotation\Security;
+use Swagger\Annotations as SWG;
+use Symfony\Component\Routing\Annotation\Route;
 
 class UserController extends AbstractController
 {
@@ -28,20 +33,81 @@ class UserController extends AbstractController
         $this->params = $params;
     }
 
+    /**
+     * @param $id
+     * @return View
+     *
+     * @Route("api/totalPosts/{id}", methods={"GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns the total posts, topics, replies and comments of a user"
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Returned when user not found"
+     * )
+     * @SWG\Tag(name="User")
+     */
     public function totalPosts($id)
     {
         $user = $this->getDoctrine()->getRepository('App\Entity\User')->find($id);
         if (empty($user)) {
-            return new View("User can not be found", Response::HTTP_NOT_FOUND);
+            return new View(array("code" => 404, "message" => "User can not be found"), Response::HTTP_NOT_FOUND);
         }
         $topics = count($user->getTopics());
         $replies = count($user->getReplies());
         $comments = count($user->getComments());
         $posts = $topics + $replies + $comments;
-        $result = array(["user"=> $user->getUsername(),"posts"=>$posts, "topics"=> $topics,"replies"=>$replies,"comments"=>$comments]);
+        $result = array("user"=> $user->getUsername(),"posts"=>$posts, "topics"=> $topics,"replies"=>$replies,"comments"=>$comments);
         return View::create($result, Response::HTTP_OK, []);
     }
 
+    /**
+     * @param Request $request
+     * @param $id
+     * @param UserPasswordEncoderInterface $encoder
+     * @return View
+     *
+     * @Route("api/passwordChange/{id}", methods={"PUT"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns user data"
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Returns forbidden when user doesn't have access"
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Returned when user not found"
+     * )
+     * @SWG\Response(
+     *     response=406,
+     *     description="Returned when error"
+     * )
+     *
+     * @SWG\Parameter(
+     *     name="old_password",
+     *     type="string",
+     *     in="query",
+     *     description="Old password"
+     * )
+     * @SWG\Parameter(
+     *     name="new_password",
+     *     type="string",
+     *     in="query",
+     *     description="New password"
+     * )
+     * @SWG\Parameter(
+     *     name="new_password_confirm",
+     *     type="string",
+     *     in="query",
+     *     description="TNew password confirmation"
+     * )
+     * @SWG\Tag(name="User")
+     */
     public function passwordChange(Request $request, $id, UserPasswordEncoderInterface $encoder)
     {
 
@@ -49,11 +115,11 @@ class UserController extends AbstractController
         $user = $this->getDoctrine()->getRepository('App\Entity\User')->find($id);
         if (!$this->hasAccess($user->getId(),$this->getUser()->getId()))
         {
-            return View::create("FORBIDDEN", Response::HTTP_FORBIDDEN);
+            return View::create(array("code" => 403, "message" => "FORBIDDEN"), Response::HTTP_FORBIDDEN);
         }
 
         if (empty($user)) {
-            return new View("User can not be found", Response::HTTP_NOT_FOUND);
+            return new View(array("code" => 404, "message" => "User can not be found"), Response::HTTP_NOT_FOUND);
         }
         else
         {
@@ -71,10 +137,10 @@ class UserController extends AbstractController
                 }
                 else
                 {
-                    return View::create("Your password and confirmation password do not match ", Response::HTTP_NOT_ACCEPTABLE, []);
+                    return View::create(array("code" => 406, "message" => "Your password and confirmation password do not match "), Response::HTTP_NOT_ACCEPTABLE, []);
                 }
             } else {
-                return View::create("The old password you have entered is incorrect", Response::HTTP_NOT_ACCEPTABLE, []);
+                return View::create(array("code" => 406, "message" => "The old password you have entered is incorrect"), Response::HTTP_NOT_ACCEPTABLE, []);
             }
         }
 
