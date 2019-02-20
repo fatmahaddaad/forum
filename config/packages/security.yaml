@@ -299,6 +299,10 @@ security:
             pattern:  ^/api/doc.json
             stateless: true
             anonymous: true
+        swagger_ui:
+            pattern:  ^/api/doc
+            stateless: true
+            anonymous: true
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
@@ -343,3 +347,4 @@ security:
         - { path: ^/userShow, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/removeProfilePicture, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/api/doc.json, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/doc, roles: IS_AUTHENTICATED_ANONYMOUSLY }
