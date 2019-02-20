@@ -17,6 +17,9 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+        swagger_ui:
+            pattern:  ^/api/doc
+            security: false
         login:
             pattern:  ^/login
             stateless: true
@@ -297,10 +300,6 @@ security:
             anonymous: true
         swagger:
             pattern:  ^/api/doc.json
-            stateless: true
-            anonymous: true
-        swagger_ui:
-            pattern:  ^/api/doc
             stateless: true
             anonymous: true
     access_control:
