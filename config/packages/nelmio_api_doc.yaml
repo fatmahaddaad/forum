@@ -1,9 +1,21 @@
 nelmio_api_doc:
     documentation:
+        host: 127.0.0.1:8000
+        schemes: [http, https]
         info:
             title: My App
             description: This is an awesome app!
             version: 1.0.0
+        securityDefinitions:
+            Bearer:
+                type: apiKey
+                description: 'Value: Bearer {jwt}'
+                name: Authorization
+                in: header
+            security:
+                - Bearer: []
     areas: # to filter documented areas
-        path_patterns:
+        path_patterns: # an array of regexps
             - ^/api(?!/doc$) # Accepts routes under /api except /api/doc
+        host_patterns:
+            - ^api\.
