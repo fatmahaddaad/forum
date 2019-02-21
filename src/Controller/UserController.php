@@ -89,24 +89,17 @@ class UserController extends AbstractController
      * )
      *
      * @SWG\Parameter(
-     *     name="old_password",
-     *     type="string",
-     *     in="query",
-     *     description="Old password"
+     *     name="Values",
+     *     in="body",
+     *     description="",
+     *     required=true,
+     *     @SWG\Schema(
+     *          @SWG\Property(property="old_password", type="string"),
+     *          @SWG\Property(property="new_password", type="string"),
+     *          @SWG\Property(property="new_password_confirm", type="string")
+     *     )
      * )
-     * @SWG\Parameter(
-     *     name="new_password",
-     *     type="string",
-     *     in="query",
-     *     description="New password"
-     * )
-     * @SWG\Parameter(
-     *     name="new_password_confirm",
-     *     type="string",
-     *     in="query",
-     *     description="TNew password confirmation"
-     * )
-     * @SWG\Tag(name="User")
+     * @SWG\Tag(name="Profile")
      */
     public function passwordChange(Request $request, $id, UserPasswordEncoderInterface $encoder)
     {
@@ -146,22 +139,57 @@ class UserController extends AbstractController
 
     }
 
+    /**
+     * @param $id
+     * @param Request $request
+     * @return View
+     * @throws \Exception
+     *
+     * @Route("api/setProfilePicture/{id}", methods={"POST"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns user data and profile_images path"
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Returns forbidden when user doesn't have access"
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Returned when user not found"
+     * )
+     * @SWG\Response(
+     *     response=400,
+     *     description="Returned when error"
+     * )
+     *
+     * @SWG\Parameter(
+     *     name="picture",
+     *     type="file",
+     *     in="formData",
+     *     required=true,
+     *     description="profile picture"
+     * )
+     *
+     * @SWG\Tag(name="Profile")
+     */
     public function setProfilePicture($id, Request $request)
     {
         $user = $this->getDoctrine()->getRepository('App\Entity\User')->find($id);
         if (empty($user)) {
-            return new View("User can not be found", Response::HTTP_NOT_FOUND);
+            return new View(array("code" => 404, "message" => "User can not be found"), Response::HTTP_NOT_FOUND);
         }
 
         if (!$this->hasAccess($user->getId(),$this->getUser()->getId()))
         {
-            return View::create("FORBIDDEN", Response::HTTP_FORBIDDEN);
+            return View::create(array("code" => 403, "message" => "FORBIDDEN"), Response::HTTP_FORBIDDEN);
         }
         try {
             $file = $request->files->get( 'picture' );
             if (empty($file))
             {
-                return View::create("Null value can not be send", Response::HTTP_BAD_REQUEST, []);
+                return View::create(array("code" => 400, "message" => "Null value can not be send"), Response::HTTP_BAD_REQUEST, []);
             }
             $fileName = md5 ( uniqid () ) . '.' . $file->guessExtension ();
             $original_name = $file->getClientOriginalName ();
@@ -172,30 +200,68 @@ class UserController extends AbstractController
             $em = $this->getDoctrine()->getManager();
             $em->flush();
             $array = array (
+                "code" => 200,
                 'status' => 1,
-                'entity' => $user,
-                'param' => $this->params->get('app.path.profile_images')
+                'param' => $this->params->get('app.path.profile_images'),
+                'entity' => $user
             );
             $response = View::create($array, Response::HTTP_OK, []);
             return $response;
         } catch ( Exception $e ) {
-            $array = array('status'=> 0 );
+            $array = array("code" => 400, 'status'=> 0 );
             $response = View::create($array, Response::HTTP_BAD_REQUEST, []);
             return $response;
         }
     }
 
+    /**
+     * @param Request $request
+     * @param $id
+     * @return View
+     * @throws \Exception
+     *
+     * @Route("api/EditProfile/{id}", methods={"PUT"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns user data"
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Returns forbidden when user doesn't have access"
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Returned when user not found"
+     * )
+     *
+     * @SWG\Parameter(
+     *     name="Values",
+     *     in="body",
+     *     description="Profile Info",
+     *     @SWG\Schema(
+     *          @SWG\Property(property="bio", type="string"),
+     *          @SWG\Property(property="birthdate", type="string"),
+     *          @SWG\Property(property="company", type="string"),
+     *          @SWG\Property(property="fullname", type="string"),
+     *          @SWG\Property(property="website", type="string")
+     *     )
+     * )
+     *
+     *
+     * @SWG\Tag(name="Profile")
+     */
     public function editProfile(Request $request, $id)
     {
         $em = $this->getDoctrine()->getManager();
         $user = $this->getDoctrine()->getRepository('App\Entity\User')->find($id);
         if (empty($user)) {
-            return new View("User can not be found", Response::HTTP_NOT_FOUND);
+            return new View(array("code" => 404, "message" => "User can not be found"), Response::HTTP_NOT_FOUND);
         }
 
         if (!$this->hasAccess($user->getId(),$this->getUser()->getId()))
         {
-            return View::create("FORBIDDEN", Response::HTTP_FORBIDDEN);
+            return View::create(array("code" => 403, "message" => "FORBIDDEN"), Response::HTTP_FORBIDDEN);
         }
         $bio = $request->get( 'bio' );
         $birthdate = new \DateTime($request->get( 'birthdate' ));
@@ -209,7 +275,7 @@ class UserController extends AbstractController
         $user->setWebsite($website);
 
         $em->flush();
-        return View::create($user, Response::HTTP_CREATED, []);
+        return View::create($user, Response::HTTP_OK, []);
 
     }
 
@@ -217,13 +283,30 @@ class UserController extends AbstractController
         return ($id==$idUser)?true:false;
     }
 
+    /**
+     * @param $id
+     * @return View
+     *
+     * @SWG\Tag(name="User")
+     * @Route("api/userShow/{id}", methods={"GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns user data for public"
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Returned when user not found"
+     * )
+     *
+     */
     public function userShow($id)
     {
         $em = $this->getDoctrine()->getManager();
         $user = $em->getRepository('App\Entity\User')->find($id);
 
         if (empty($user)) {
-            return new View("User can not be found", Response::HTTP_NOT_FOUND);
+            return new View(array("code" => 404, "message" => "User can not be found"), Response::HTTP_NOT_FOUND);
         }
         $data = array(
                     "topics" => $user->getTopics(),
@@ -239,38 +322,83 @@ class UserController extends AbstractController
         return View::create($data, Response::HTTP_OK, []);
     }
 
+    /**
+     * @param $id
+     * @return View
+     *
+     * @SWG\Tag(name="Profile")
+     * @Route("api/profileShow/{id}", methods={"GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns user data for profile owner"
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Returned when user not found"
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Returns forbidden when user doesn't have access"
+     * )
+     */
     public function profileShow($id)
     {
         $em = $this->getDoctrine()->getManager();
         $user = $em->getRepository('App\Entity\User')->find($id);
 
         if (empty($user)) {
-            return new View("User can not be found", Response::HTTP_NOT_FOUND);
+            return new View(array("code" => 404, "message" => "User can not be found"), Response::HTTP_NOT_FOUND);
         }
         if (!$this->hasAccess($user->getId(),$this->getUser()->getId()))
         {
-            return View::create("FORBIDDEN", Response::HTTP_FORBIDDEN);
+            return View::create(array("code" => 403, "message" => "FORBIDDEN"), Response::HTTP_FORBIDDEN);
         }
         return View::create($user, Response::HTTP_OK, []);
     }
 
+    /**
+     * @param $id
+     * @return View
+     * @throws \Exception
+     *
+     * @SWG\Tag(name="Profile")
+     * @Route("api/removeProfilePicture/{id}", methods={"POST"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns user data for profile owner"
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Returned when user not found"
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Returns forbidden when user doesn't have access"
+     * )
+     * @SWG\Response(
+     *     response=400,
+     *     description="Returned when profile picture not found"
+     * )
+     */
     public function removeProfilePicture($id)
     {
         $fileSystem = new Filesystem();
         $user = $this->getDoctrine()->getRepository('App\Entity\User')->find($id);
         if (empty($user)) {
-            return new View("User can not be found", Response::HTTP_NOT_FOUND);
+            return new View(array("code" => 404, 'message'=> "User can not be found"), Response::HTTP_NOT_FOUND);
         }
 
         if (!$this->hasAccess($user->getId(),$this->getUser()->getId()))
         {
-            return View::create("FORBIDDEN", Response::HTTP_FORBIDDEN);
+            return View::create(array("code" => 403, 'message'=> "FORBIDDEN"), Response::HTTP_FORBIDDEN);
         }
         try {
             $file = $user->getImage();
             if (empty($file))
             {
-                return View::create("Profile picture can not be found", Response::HTTP_BAD_REQUEST, []);
+                return View::create(array("code" => 400, 'message'=> "Profile picture can not be found"), Response::HTTP_BAD_REQUEST, []);
             }
 
             $fileSystem->remove($this->params->get('app.path.profile_images')."/".$file);
@@ -279,14 +407,15 @@ class UserController extends AbstractController
             $em = $this->getDoctrine()->getManager();
             $em->flush();
             $array = array (
+                "code" => 200,
                 'status' => 1,
+                'param' => $this->params->get('app.path.profile_images'),
                 'entity' => $user,
-                'param' => $this->params->get('app.path.profile_images')
             );
             $response = View::create($array, Response::HTTP_OK, []);
             return $response;
         } catch ( Exception $e ) {
-            $array = array('status'=> 0 );
+            $array = array("code" => 400, 'status'=> 0 );
             $response = View::create($array, Response::HTTP_BAD_REQUEST, []);
             return $response;
         }
