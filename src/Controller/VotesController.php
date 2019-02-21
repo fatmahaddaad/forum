@@ -12,9 +12,49 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Entity\Votes;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Annotation\Security;
+use Swagger\Annotations as SWG;
+use Symfony\Component\Routing\Annotation\Route;
 
 class VotesController extends AbstractController
 {
+    /**
+     * @param Request $request
+     * @return View
+     *
+     * @Route("api/addVote", methods={"POST"})
+     *
+     * @SWG\Tag(name="Vote")
+     * @SWG\Response(
+     *     response=201,
+     *     description="Returns created vote"
+     * )
+     * @SWG\Response(
+     *     response=406,
+     *     description="Returned when Null or both Values given or user trying to vote his own reply"
+     * )
+     * @SWG\Response(
+     *     response=226,
+     *     description="Returned when user already voted on the reply"
+     * )
+     * @SWG\Response(
+     *     response=426,
+     *     description="Returned when vote modified"
+     * )
+     *
+     * @SWG\Parameter(
+     *     name="Values",
+     *     in="body",
+     *     description="Vote Info, send `up` value empty to vote down and `down` value empty to vote up",
+     *     required=true,
+     *     @SWG\Schema(
+     *          @SWG\Property(property="up", type="string"),
+     *          @SWG\Property(property="down", type="string"),
+     *          @SWG\Property(property="reply_id", type="integer")
+     *     )
+     * )
+     */
     public function addVote(Request $request)
     {
         $vote = new Votes();
@@ -26,11 +66,11 @@ class VotesController extends AbstractController
         $user = $this->getUser();
         if(empty($reply) || (empty($up) && empty($down)))
         {
-            return View::create("Null values are not allowed", Response::HTTP_NOT_FOUND);
+            return View::create(array("code" => 406, "message" => "Null values are not allowed"), Response::HTTP_NOT_ACCEPTABLE);
         }
         elseif (!empty($up) && !empty($down))
         {
-            return View::create("Both values can not be send", Response::HTTP_NOT_ACCEPTABLE);
+            return View::create(array("code" => 406, "message" => "Both values can not be send"), Response::HTTP_NOT_ACCEPTABLE);
         }
         elseif ($this->voteExist($user->getId(),$reply))
         {
@@ -38,7 +78,7 @@ class VotesController extends AbstractController
             $votes = $this->getDoctrine()->getRepository('App\Entity\Votes')->findOneBy($criteria);
 
             if($votes->getVote() == $vote_val) {
-                return View::create("You already voted on this reply", Response::HTTP_IM_USED);
+                return View::create(array("code" => 225, "message" => "You already voted on this reply"), Response::HTTP_IM_USED);
             } else
             {
                 return $this->editVote($votes->getId());
@@ -46,7 +86,7 @@ class VotesController extends AbstractController
         }
         elseif ($this->replyOwner($user->getId(),$reply->getUser()->getId()))
         {
-            return View::create("You can not vote your own reply", Response::HTTP_NOT_ACCEPTABLE);
+            return View::create(array("code" => 406, "message" => "You can not vote your own reply"), Response::HTTP_NOT_ACCEPTABLE);
         }
         else {
             $vote->setVote($vote_val);
