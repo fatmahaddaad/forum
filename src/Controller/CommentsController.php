@@ -14,6 +14,10 @@ use Symfony\Component\HttpFoundation\Response;
 use App\Entity\Replies;
 use App\Entity\Topics;
 use App\Entity\Comments;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Annotation\Security;
+use Swagger\Annotations as SWG;
+use Symfony\Component\Routing\Annotation\Route;
 
 class CommentsController extends AbstractController
 {
@@ -22,6 +26,29 @@ class CommentsController extends AbstractController
      * @param Request $request
      * @return View
      * @throws \Exception
+     *
+     * @Route("api/addComment", methods={"POST"})
+     *
+     * @SWG\Tag(name="Comment")
+     * @SWG\Response(
+     *     response=201,
+     *     description="Returns created comment"
+     * )
+     * @SWG\Response(
+     *     response=406,
+     *     description="Returned when Null Values given"
+     * )
+     *
+     * @SWG\Parameter(
+     *     name="Values",
+     *     in="body",
+     *     description="Comment Info",
+     *     required=true,
+     *     @SWG\Schema(
+     *          @SWG\Property(property="content", type="string"),
+     *          @SWG\Property(property="reply_id", type="integer")
+     *     )
+     * )
      */
     public function addComment(Request $request)
     {
@@ -32,7 +59,7 @@ class CommentsController extends AbstractController
         $user = $this->getUser();
         if(empty($content) || empty($reply))
         {
-            return View::create("NULL VALUES ARE NOT ALLOWED", Response::HTTP_NOT_ACCEPTABLE);
+            return View::create(array("code" => 406, "message" => "NULL VALUES ARE NOT ALLOWED"), Response::HTTP_NOT_ACCEPTABLE);
         }
         else {
             $comment->setContent($content);
@@ -53,6 +80,37 @@ class CommentsController extends AbstractController
      * @param Request $request
      * @param $id
      * @return View
+     *
+     * @Route("api/editComment/{id}", methods={"PUT"})
+     *
+     * @SWG\Tag(name="Comment")
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns modified comment"
+     * )
+     * @SWG\Response(
+     *     response=406,
+     *     description="Returned when Null Values given"
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Returned when comment not found"
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Returns forbidden when user doesn't have access"
+     * )
+     *
+     * @SWG\Parameter(
+     *     name="Values",
+     *     in="body",
+     *     description="Comment Info",
+     *     required=true,
+     *     @SWG\Schema(
+     *          @SWG\Property(property="content", type="string"),
+     *          @SWG\Property(property="reply_id", type="integer")
+     *     )
+     * )
      */
     public function editComment(Request $request, $id)
     {
@@ -60,21 +118,21 @@ class CommentsController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $comment = $this->getDoctrine()->getRepository('App\Entity\Comments')->find($id);
         if (empty($comment)) {
-            return new View("Comment not found", Response::HTTP_NOT_FOUND);
+            return new View(array("code"=> 404, "message" => "Comment not found"), Response::HTTP_NOT_FOUND);
         }
         elseif(empty($content))
         {
-            return View::create("NULL VALUES ARE NOT ALLOWED", Response::HTTP_NOT_ACCEPTABLE);
+            return View::create(array("code"=> 406, "message" => "NULL VALUES ARE NOT ALLOWED"), Response::HTTP_NOT_ACCEPTABLE);
         }
         else
         {
             if(!$this->hasAccess($comment->getUser()->getId(),$this->getUser()->getId()) && !$this->isAdmin($this->getUser()->getId()) && !$this->isModerator($this->getUser()->getId()))
             {
-                return View::create("FORBIDDEN", Response::HTTP_FORBIDDEN);
+                return View::create(array("code"=> 403, "message" => "FORBIDDEN"), Response::HTTP_FORBIDDEN);
             }
             $comment->setContent($content);
             $em->flush();
-            return View::create($comment, Response::HTTP_CREATED, []);
+            return View::create($comment, Response::HTTP_OK, []);
         }
     }
 
@@ -82,49 +140,90 @@ class CommentsController extends AbstractController
      * delete comment
      * @param $id
      * @return View
+     *
+     * @Route("api/deleteComment/{id}", methods={"POST"})
+     *
+     * @SWG\Tag(name="Comment")
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns success message"
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Returned when comment not found"
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Returns forbidden when user doesn't have access"
+     * )
+     *
      */
     public function deleteComment($id)
     {
         $em = $this->getDoctrine()->getManager();
         $comment = $em->getRepository('App\Entity\Comments')->find($id);
         if (empty($comment)) {
-            return new View("Comment not found", Response::HTTP_NOT_FOUND);
+            return new View(array("code"=> 404, "message" => "Comment not found"), Response::HTTP_NOT_FOUND);
         }
         else
         {
             if(!$this->hasAccess($comment->getUser()->getId(),$this->getUser()->getId()) && !$this->isAdmin($this->getUser()->getId()) && !$this->isModerator($this->getUser()->getId()))
             {
-                return View::create("FORBIDDEN", Response::HTTP_FORBIDDEN);
+                return View::create(array("code"=> 403, "message" => "FORBIDDEN"), Response::HTTP_FORBIDDEN);
             }
             $em->remove($comment);
             $em->flush();
-            return View::create("Comment Deleted Successfully", Response::HTTP_OK);
+            return View::create(array("code"=> 200, "message" => "Comment Deleted Successfully"), Response::HTTP_OK);
         }
     }
 
     /**
      * show all comments
      * @return View
+     *
+     * @Route("api/comments", methods={"GET"})
+     *
+     * @SWG\Tag(name="Comment")
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns list of comments"
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Returned when no comments found"
+     * )
      */
     public function comments()
     {
         $comments = $this->getDoctrine()->getRepository('App\Entity\Comments')->findAll();
         if (empty($comments)) {
-            return new View("No comments found", Response::HTTP_NOT_FOUND);
+            return new View(array("code"=> 404, "message" => "No comments found"), Response::HTTP_NOT_FOUND);
         }
         return View::create($comments, Response::HTTP_OK, []);
     }
 
     /**
-     * show one comment
+     * show one comment by ID
      * @param $id
      * @return View
+     *
+     * @Route("api/comment/{id}", methods={"GET"})
+     *
+     * @SWG\Tag(name="Comment")
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns one comment by id"
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Returned when comment not found"
+     * )
      */
     public function comment($id)
     {
         $comment = $this->getDoctrine()->getRepository('App\Entity\Comments')->find($id);
         if (empty($comment)) {
-            return new View("Comment can not be found", Response::HTTP_NOT_FOUND);
+            return new View(array("code"=> 404, "message" => "Comment can not be found"), Response::HTTP_NOT_FOUND);
         }
         return View::create($comment, Response::HTTP_OK, []);
     }
