@@ -68,7 +68,7 @@ class Topics
     private $category;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Replies", mappedBy="topic")
+     * @ORM\OneToMany(targetEntity="App\Entity\Replies", mappedBy="topic",fetch="LAZY")
      */
     private $replies;
 

@@ -188,7 +188,7 @@ class TopicsController extends AbstractController
      * show all topics
      * @return View
      *
-     * Route("api/topics", methods={"GET"})
+     * @Route("api/topics", methods={"GET"})
      *
      * @SWG\Tag(name="Topic")
      * @SWG\Response(

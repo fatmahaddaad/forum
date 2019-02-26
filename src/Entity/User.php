@@ -83,8 +83,8 @@ class User implements UserInterface
     {
         $this->isActive = true;
         $this->username = $username;
-        $this->topics = new ArrayCollection();
-        $this->replies = new ArrayCollection();
+    //    $this->topics = new ArrayCollection();
+      //  $this->replies = new ArrayCollection();
         $this->votes = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->roles = array('ROLE_USER');
@@ -147,42 +147,42 @@ class User implements UserInterface
     public function eraseCredentials()
     {
     }
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Topics", mappedBy="user")
-     */
-    private $topics;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Replies", mappedBy="user")
-     */
-    private $replies;
-
-    public function getTopics() : Collection
-    {
-        return $this->topics;
-    }
-
-    /**
-     * @param mixed $topics
-     */
-    public function setTopics($topics): void
-    {
-        $this->topics = $topics;
-    }
-
-    public function getReplies() : Collection
-    {
-        return $this->replies;
-    }
-
-    /**
-     * @param mixed $replies
-     */
-    public function setReplies($replies): void
-    {
-        $this->replies = $replies;
-    }
+//
+//    /**
+//     * @ORM\OneToMany(targetEntity="App\Entity\Topics", mappedBy="user",fetch="EXTRA_LAZY"  )
+//     */
+//    private $topics;
+//
+//    /**
+//     * @ORM\OneToMany(targetEntity="App\Entity\Replies", mappedBy="user",fetch="EXTRA_LAZY")
+//     */
+//    private $replies;
+//
+//    public function getTopics() : Collection
+//    {
+//        return $this->topics;
+//    }
+//
+//    /**
+//     * @param mixed $topics
+//     */
+//    public function setTopics($topics): void
+//    {
+//        $this->topics = $topics;
+//    }
+//
+//    public function getReplies() : Collection
+//    {
+//        return $this->replies;
+//    }
+//
+//    /**
+//     * @param mixed $replies
+//     */
+//    public function setReplies($replies): void
+//    {
+//        $this->replies = $replies;
+//    }
 
     public function getId()
     {
