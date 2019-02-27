@@ -302,6 +302,14 @@ security:
             pattern:  ^/api/doc.json
             stateless: true
             anonymous: true
+        repliesByTopic:
+            pattern:  ^/repliesByTopic
+            stateless: true
+            anonymous: true
+        commentsByReply:
+            pattern:  ^/commentsByReply
+            stateless: true
+            anonymous: true
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
@@ -347,3 +355,5 @@ security:
         - { path: ^/removeProfilePicture, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/api/doc.json, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/doc, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/repliesByTopic, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/commentsByReply, roles: IS_AUTHENTICATED_ANONYMOUSLY }

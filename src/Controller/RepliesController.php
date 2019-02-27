@@ -329,4 +329,18 @@ class RepliesController extends AbstractController
             return View::create($reply, Response::HTTP_OK, []);
         }
     }
+
+    public function commentsByReply($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $reply = $em->getRepository('App\Entity\Replies')->find($id);
+        $comments = $em->getRepository('App\Entity\Comments')->findBy(array("reply" => $reply->getId()));
+        if (empty($reply)) {
+            return new View(array("code" => 404, "message" => "Reply can not be found"), Response::HTTP_NOT_FOUND);
+        }
+        if (count($comments) == 0) {
+            return new View(array("code" => 404, "message" => "No comments found"), Response::HTTP_NOT_FOUND);
+        }
+        return View::create($comments, Response::HTTP_OK, []);
+    }
 }

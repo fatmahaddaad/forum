@@ -259,3 +259,15 @@ swagger_ui:
     path: /api/doc
     methods: [GET]
     defaults: { _controller: nelmio_api_doc.controller.swagger_ui }
+repliesByTopic:
+    path: /repliesByTopic/{id}
+    controller: App\Controller\TopicsController::repliesByTopic
+    methods: [GET]
+    defaults:
+        _format: json
+commentsByReply:
+    path: /commentsByReply/{id}
+    controller: App\Controller\RepliesController::commentsByReply
+    methods: [GET]
+    defaults:
+        _format: json

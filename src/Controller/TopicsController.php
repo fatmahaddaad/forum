@@ -241,6 +241,36 @@ class TopicsController extends AbstractController
     }
 
     /**
+     * @param $id
+     * @return View
+     *
+     * @Route("api/repliesByTopic/{id}", methods={"GET"})
+     *
+     * @SWG\Tag(name="Topic")
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns list of replies from one topic"
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Returned when topic not found"
+     * )
+     */
+    public function repliesByTopic($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $topic = $em->getRepository('App\Entity\Topics')->find($id);
+        $replies = $em->getRepository('App\Entity\Replies')->findBy(array("topic" => $topic->getId()));
+        if (empty($topic)) {
+            return new View(array("code" => 404, "message" => "Topic can not be found"), Response::HTTP_NOT_FOUND);
+        }
+        if (count($replies) == 0) {
+            return new View(array("code" => 404, "message" => "No replies found"), Response::HTTP_NOT_FOUND);
+        }
+        return View::create($replies, Response::HTTP_OK, []);
+    }
+
+    /**
      * count number of replies in one topic
      * @param $id
      * @return View
