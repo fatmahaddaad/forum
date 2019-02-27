@@ -51,6 +51,12 @@ class Replies
      */
     private $topic;
 
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
     public function getContent()
     {
         return $this->content;
@@ -92,12 +98,12 @@ class Replies
     }
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Votes", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\Votes", mappedBy="reply")
      */
     private $votes;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Comments", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\Comments", mappedBy="reply")
      */
     private $comments;
 
