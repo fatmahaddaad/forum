@@ -265,9 +265,28 @@ class TopicsController extends AbstractController
             return new View(array("code" => 404, "message" => "Topic can not be found"), Response::HTTP_NOT_FOUND);
         }
         if (count($replies) == 0) {
-            return new View(array("code" => 404, "message" => "No replies found"), Response::HTTP_NOT_FOUND);
+            return View::create(array("topic" => $topic, "replies" => 0, "scores" => 0 ), Response::HTTP_OK, []);
         }
-        return View::create($replies, Response::HTTP_OK, []);
+        else
+        {
+            $scores = [];
+            foreach ($replies as $reply)
+            {
+                $em = $this->getDoctrine()->getManager();
+                $votes = $em->getRepository('App\Entity\Votes')->findBy(array("reply" => $reply->getId()));
+
+                if (empty($votes)) {
+                    $score = 0;
+                }
+                $score = 0;
+                foreach ($votes as $vote)
+                {
+                    $score += $vote->getVote();
+                }
+                array_push($scores, array("reply" => $reply->getId(), "score" => $score));
+            }
+            return View::create(array("topic" => $topic, "replies" => $replies, "scores" => $scores), Response::HTTP_OK, []);
+        }
     }
 
     /**
