@@ -264,8 +264,17 @@ class TopicsController extends AbstractController
         if (empty($topic)) {
             return new View(array("code" => 404, "message" => "Topic can not be found"), Response::HTTP_NOT_FOUND);
         }
+        $thisTopic = array("id" => $topic->getId(),
+            "subject" => $topic->getSubject(),
+            "content" => $topic->getContent(),
+            "date" => $topic->getDate(),
+            "views" => $topic->getViews(),
+            "status" => $topic->getStatus(),
+            "is_open" => $topic->getIsOpen(),
+            "user" => array("id" => $topic->getUser()->getId(), "username" => $topic->getUser()->getUsername(), "image" => $topic->getUser()->getImage()) ,
+            "category" => array("id" => $topic->getCategory()->getId(), "name" => $topic->getCategory()->getName()));
         if (count($replies) == 0) {
-            return View::create(array("topic" => $topic, "replies" => 0, "scores" => 0 ), Response::HTTP_OK, []);
+            return View::create(array("topic" => $thisTopic, "replies" => 0, "scores" => 0 ), Response::HTTP_OK, []);
         }
         else
         {
@@ -285,7 +294,7 @@ class TopicsController extends AbstractController
                 }
                 array_push($scores, array("reply" => $reply->getId(), "score" => $score));
             }
-            return View::create(array("topic" => $topic, "replies" => $replies, "scores" => $scores), Response::HTTP_OK, []);
+            return View::create(array("topic" => $thisTopic, "replies" => $replies, "scores" => $scores), Response::HTTP_OK, []);
         }
     }
 
