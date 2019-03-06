@@ -31,7 +31,7 @@ class Topics
     private $subject;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="text")
      */
     private $content;
 
