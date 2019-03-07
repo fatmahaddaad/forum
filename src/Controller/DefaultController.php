@@ -55,7 +55,7 @@ class DefaultController extends AbstractController
 
     public function api()
     {
-        $data = ['isLogged' => sprintf('Logged in as %s', $this->getUser()->getUsername())];
+        $data = ['isLogged' => array('id' => $this->getUser()->getId(),'username' => $this->getUser()->getUsername())];
         return View::create($data, Response::HTTP_OK);
     }
 
