@@ -346,7 +346,7 @@ class UserController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
         $user = $em->getRepository('App\Entity\User')->find($id);
-
+        $topics = $this->getDoctrine()->getRepository('App\Entity\Topics')->findBy(array('user' => $id));
         if (empty($user)) {
             return new View(array("code" => 404, "message" => "User can not be found"), Response::HTTP_NOT_FOUND);
         }
@@ -354,7 +354,8 @@ class UserController extends AbstractController
         {
             return View::create(array("code" => 403, "message" => "FORBIDDEN"), Response::HTTP_FORBIDDEN);
         }
-        return View::create($user, Response::HTTP_OK, []);
+        $data = array('user' => $user, 'topics' => $topics);
+        return View::create($data, Response::HTTP_OK, []);
     }
 
     /**
@@ -419,5 +420,10 @@ class UserController extends AbstractController
             $response = View::create($array, Response::HTTP_BAD_REQUEST, []);
             return $response;
         }
+    }
+
+    public function topicsByUser($id)
+    {
+
     }
 }
