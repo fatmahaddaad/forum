@@ -310,6 +310,10 @@ security:
             pattern:  ^/commentsByReply
             stateless: true
             anonymous: true
+        topicsByCategory:
+            pattern:  ^/topicsByCategory
+            stateless: true
+            anonymous: true
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
@@ -357,3 +361,4 @@ security:
         - { path: ^/api/doc, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/repliesByTopic, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/commentsByReply, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/topicsByCategory, roles: IS_AUTHENTICATED_ANONYMOUSLY }

@@ -252,4 +252,81 @@ class CategoriesController extends AbstractController
         }
         return View::create(count($topics), Response::HTTP_OK, []);
     }
+    /**
+     * Topics by category_ID
+     * @param $id
+     * @return View
+     *
+     * @Route("api/topicsByCategory/{id}", methods={"GET"})
+     *
+     * @SWG\Tag(name="Category")
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns list of topics"
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Returned when category no found"
+     * )
+     */
+    public function topicsByCategory($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $category = $em->getRepository('App\Entity\Categories')->find($id);
+        $topics = $em->getRepository('App\Entity\Topics')->findBy(array("category" => $category->getId()));
+        if (empty($topics)) {
+            return new View(array("code" => 404, "message" => "No topics found"), Response::HTTP_NOT_FOUND);
+        }
+        return View::create($topics, Response::HTTP_OK, []);
+//        $thisTopics = [];
+//        $thisCategory = array("id" => $category->getId(),
+//            "name" => $category->getName(),
+//            "description" => $category->getDescription());
+//        if (count($topics) == 0)
+//        {
+//            return View::create(array("topics" => 0, "replies" => 0, "scores" => 0 ), Response::HTTP_OK, []);
+//        }
+//        else
+//        {
+//            foreach ($topics as $topic) {
+//                $replies = $em->getRepository('App\Entity\Replies')->findBy(array("topic" => $topic->getId()));
+//                $thisTopic = array("id" => $topic->getId(),
+//                    "subject" => $topic->getSubject(),
+//                    "content" => $topic->getContent(),
+//                    "date" => $topic->getDate(),
+//                    "views" => $topic->getViews(),
+//                    "status" => $topic->getStatus(),
+//                    "is_open" => $topic->getIsOpen(),
+//                    "user" => array("id" => $topic->getUser()->getId(), "username" => $topic->getUser()->getUsername(), "image" => $topic->getUser()->getImage()) ,
+//                    "category" => array("id" => $topic->getCategory()->getId(), "name" => $topic->getCategory()->getName()));
+//                if (count($replies) == 0) {
+//                    $result = array("topic" => $thisTopic, "replies" => 0, "scores" => 0 );
+//                    array_push($thisTopics, $result);
+//                    //return View::create(array("topics" => $thisTopics, "replies" => 0, "scores" => 0 ), Response::HTTP_OK, []);
+//                }
+//                else
+//                {
+//                    $scores = [];
+//                    foreach ($replies as $reply)
+//                    {
+//                        $em = $this->getDoctrine()->getManager();
+//                        $votes = $em->getRepository('App\Entity\Votes')->findBy(array("reply" => $reply->getId()));
+//
+//                        if (empty($votes)) {
+//                            $score = 0;
+//                        }
+//                        $score = 0;
+//                        foreach ($votes as $vote)
+//                        {
+//                            $score += $vote->getVote();
+//                        }
+//                        array_push($scores, array("reply" => $reply->getId(), "score" => $score));
+//                    }
+//                    $result = array("topic" => $thisTopic, "replies" => $replies, "scores" => $scores);
+//                    array_push($thisTopics, $result);
+//                }
+//            }
+//            return View::create(array('category' => $thisCategory, 'data' => $thisTopics), Response::HTTP_OK, []);
+//        }
+    }
 }

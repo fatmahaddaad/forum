@@ -271,3 +271,9 @@ commentsByReply:
     methods: [GET]
     defaults:
         _format: json
+topicsByCategory:
+    path: /topicsByCategory/{id}
+    controller: App\Controller\CategoriesController::topicsByCategory
+    methods: [GET]
+    defaults:
+        _format: json
