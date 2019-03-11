@@ -264,6 +264,10 @@ class TopicsController extends AbstractController
         if (empty($topic)) {
             return new View(array("code" => 404, "message" => "Topic can not be found"), Response::HTTP_NOT_FOUND);
         }
+        $views = $topic->getViews();
+        $topic->setViews($views + 1);
+        $em->persist($topic);
+        $em->flush();
         $thisTopic = array("id" => $topic->getId(),
             "subject" => $topic->getSubject(),
             "content" => $topic->getContent(),
