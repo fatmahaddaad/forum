@@ -35,11 +35,11 @@ class VotesController extends AbstractController
      *     description="Returned when Null or both Values given or user trying to vote his own reply"
      * )
      * @SWG\Response(
-     *     response=226,
+     *     response=400,
      *     description="Returned when user already voted on the reply"
      * )
      * @SWG\Response(
-     *     response=426,
+     *     response=200,
      *     description="Returned when vote modified"
      * )
      *
@@ -78,7 +78,7 @@ class VotesController extends AbstractController
             $votes = $this->getDoctrine()->getRepository('App\Entity\Votes')->findOneBy($criteria);
 
             if($votes->getVote() == $vote_val) {
-                return View::create(array("code" => 225, "message" => "You already voted on this reply"), Response::HTTP_IM_USED);
+                return View::create(array("code" => 400, "message" => "You already voted on this reply"), Response::HTTP_BAD_REQUEST);
             } else
             {
                 return $this->editVote($votes->getId());
@@ -120,6 +120,6 @@ class VotesController extends AbstractController
         $new_vote = $old_vote * (-1);
         $vote->setVote($new_vote);
         $em->flush();
-        return View::create($vote, Response::HTTP_UPGRADE_REQUIRED, []);
+        return View::create($vote, Response::HTTP_OK, []);
     }
 }
