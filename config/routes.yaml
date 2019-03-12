@@ -277,3 +277,15 @@ topicsByCategory:
     methods: [GET]
     defaults:
         _format: json
+deactivateUser:
+    path: /deactivateUser/{id}
+    controller: App\Controller\UserController::deactivateUser
+    methods: [PUT]
+    defaults:
+        _format: json
+activateUser:
+    path: /activateUser/{id}
+    controller: App\Controller\UserController::activateUser
+    methods: [PUT]
+    defaults:
+        _format: json

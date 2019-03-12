@@ -275,7 +275,7 @@ class TopicsController extends AbstractController
             "views" => $topic->getViews(),
             "status" => $topic->getStatus(),
             "is_open" => $topic->getIsOpen(),
-            "user" => array("id" => $topic->getUser()->getId(), "username" => $topic->getUser()->getUsername(), "image" => $topic->getUser()->getImage()) ,
+            "user" => array("id" => $topic->getUser()->getId(), "username" => $topic->getUser()->getUsername(), "image" => $topic->getUser()->getImage(), "is_active" => $topic->getUser()->getIsActive()) ,
             "category" => array("id" => $topic->getCategory()->getId(), "name" => $topic->getCategory()->getName()));
         if (count($replies) == 0) {
             return View::create(array("topic" => $thisTopic, "replies" => 0, "scores" => 0 ), Response::HTTP_OK, []);

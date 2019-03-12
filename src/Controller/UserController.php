@@ -426,4 +426,94 @@ class UserController extends AbstractController
     {
 
     }
+
+    /**
+     * @param $id
+     * @return View
+     *
+     * @SWG\Tag(name="User")
+     * @Route("api/activateUser/{id}", methods={"PUT"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns activated user"
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Returned when user not found"
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Returns forbidden when user doesn't have access"
+     * )
+     * @SWG\Response(
+     *     response=400,
+     *     description="Returned when User already active"
+     * )
+     */
+    public function activateUser($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository('App\Entity\User')->find($id);
+        if (!$this->isAdmin($this->getUser()->getId()))
+        {
+            return View::create(array("code" => 403, 'message'=> "FORBIDDEN"), Response::HTTP_FORBIDDEN);
+        }
+        if (empty($user)) {
+            return new View(array("code" => 404, 'message'=> "User can not be found"), Response::HTTP_NOT_FOUND);
+        } elseif ($user->getIsActive() == true) {
+            return new View(array("code" => 404, 'message'=> "User already active"), Response::HTTP_BAD_REQUEST);
+        } else {
+            $user->setIsActive(true);
+            $em->flush();
+            return View::create($user, Response::HTTP_OK, []);
+        }
+    }
+
+    /**
+     * @param $id
+     * @return View
+     *
+     * @SWG\Tag(name="User")
+     * @Route("api/deactivateUser/{id}", methods={"PUT"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns deactivated user"
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Returned when user not found"
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Returns forbidden when user doesn't have access"
+     * )
+     * @SWG\Response(
+     *     response=400,
+     *     description="Returned when User already deactivate"
+     * )
+     */
+    public function deactivateUser($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository('App\Entity\User')->find($id);
+        if (!$this->isAdmin($this->getUser()->getId()))
+        {
+            return View::create(array("code" => 403, 'message'=> "FORBIDDEN"), Response::HTTP_FORBIDDEN);
+        }
+        if (empty($user)) {
+            return new View(array("code" => 404, 'message'=> "User can not be found"), Response::HTTP_NOT_FOUND);
+        } elseif ($user->getIsActive() == false) {
+            return new View(array("code" => 404, 'message'=> "User already deactivate"), Response::HTTP_BAD_REQUEST);
+        } else {
+            $user->setIsActive(false);
+            $em->flush();
+            return View::create($user, Response::HTTP_OK, []);
+        }
+    }
+    public function isAdmin($idUser){
+        $user = $this->getDoctrine()->getRepository('App\Entity\User')->find($idUser);
+        return (in_array("ROLE_ADMIN" ,$user->getRoles()))?true:false;
+    }
 }
