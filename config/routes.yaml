@@ -289,3 +289,9 @@ activateUser:
     methods: [PUT]
     defaults:
         _format: json
+users:
+    path: /users
+    controller: App\Controller\UserController::users
+    methods: [GET]
+    defaults:
+        _format: json

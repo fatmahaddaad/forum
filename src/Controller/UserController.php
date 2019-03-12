@@ -516,4 +516,46 @@ class UserController extends AbstractController
         $user = $this->getDoctrine()->getRepository('App\Entity\User')->find($idUser);
         return (in_array("ROLE_ADMIN" ,$user->getRoles()))?true:false;
     }
+
+
+    /**
+     * @return View
+     *
+     * @SWG\Tag(name="User")
+     * @Route("api/users/", methods={"GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns users"
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Returned when no user found"
+     * )
+     *
+     */
+    public function users()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $users = $em->getRepository('App\Entity\User')->findAll();
+        $allUsers = [];
+        if (empty($users)) {
+            return new View(array("code" => 404, "message" => "No user found"), Response::HTTP_NOT_FOUND);
+        }
+        foreach ($users as $user)
+        {
+            $thisUser = $this->getDoctrine()->getRepository('App\Entity\User')->find($user->getId());
+            if (empty($thisUser)) {
+                return new View(array("code" => 404, "message" => "User can not be found"), Response::HTTP_NOT_FOUND);
+            }
+            $topics = count($this->getDoctrine()->getRepository('App\Entity\Topics')->findBy(array('user' => $user->getId())));
+            $replies = count($this->getDoctrine()->getRepository('App\Entity\Replies')->findBy(array('user' => $user->getId())));
+            $comments = count($this->getDoctrine()->getRepository('App\Entity\Comments')->findBy(array('user' => $user->getId())));
+            $posts = $topics + $replies + $comments;
+            $result = array("user"=> $thisUser,"posts"=>$posts, "topics"=> $topics,"replies"=>$replies,"comments"=>$comments);
+            array_push($allUsers, $result);
+            //return View::create($result, Response::HTTP_OK, []);
+        }
+        return View::create($allUsers, Response::HTTP_OK, []);
+    }
 }
