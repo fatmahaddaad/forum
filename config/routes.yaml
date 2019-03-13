@@ -295,3 +295,9 @@ users:
     methods: [GET]
     defaults:
         _format: json
+user:
+    path: /user/{id}
+    controller: App\Controller\UserController::user
+    methods: [GET]
+    defaults:
+        _format: json

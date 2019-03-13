@@ -558,4 +558,79 @@ class UserController extends AbstractController
         }
         return View::create($allUsers, Response::HTTP_OK, []);
     }
+    /**
+     * @return View
+     *
+     * @SWG\Tag(name="User")
+     * @Route("api/users/", methods={"GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns user data for admin"
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Returned when user not found"
+     * )
+     *
+     */
+    public function user($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository('App\Entity\User')->find($id);
+        $allTopics = [];
+        $allReplies = [];
+        $allComments = [];
+        if (empty($user)) {
+            return new View(array("code" => 404, "message" => "user not found"), Response::HTTP_NOT_FOUND);
+        }
+        $topics = $this->getDoctrine()->getRepository('App\Entity\Topics')->findBy(array('user' => $user->getId()));
+        $replies = $this->getDoctrine()->getRepository('App\Entity\Replies')->findBy(array('user' => $user->getId()));
+        $comments = $this->getDoctrine()->getRepository('App\Entity\Comments')->findBy(array('user' => $user->getId()));
+        foreach ($topics as $topic) {
+            array_push($allTopics, array('id'=> $topic->getId(),
+                                                'subject' => $topic->getSubject(),
+                                                'content' => $topic->getContent(),
+                                                'status' => $topic->getStatus(),
+                                                'date' => $topic->getDate(),
+                                                'category_id' => $topic->getCategory()->getId(),
+                                                'category_name' => $topic->getCategory()->getName(),
+                                                'views' => $topic->getViews(),
+                                                'answers' => count($topic->getReplies())
+                                                ));
+        }
+        foreach ($replies as $reply) {
+            array_push($allReplies, array('id'=> $reply->getId(),
+                                                 'content' => $reply->getContent(),
+                                                 'is_correct' => $reply->getIsCorrect(),
+                                                 'topic' => array('id' => $reply->getTopic()->getId(),
+                                                                 'subject' => $reply->getTopic()->getSubject(),
+                                                                 'content' => $reply->getTopic()->getContent(),
+                                                                 'status' => $reply->getTopic()->getStatus(),
+                                                                 'date' => $reply->getTopic()->getDate(),
+                                                                 'category_id' => $reply->getTopic()->getCategory()->getId(),
+                                                                 'category_name' => $reply->getTopic()->getCategory()->getName(),
+                                                                 'views' => $reply->getTopic()->getViews(),
+                                                                 'answers' => count($reply->getTopic()->getReplies())
+                                                                )
+                                                 ));
+        }
+        foreach ($comments as $comment) {
+            array_push($allComments, array('id'=> $comment->getId(),
+                                                  'content' => $comment->getContent(),
+                                                  'topic' => array('id' => $comment->getReply()->getTopic()->getId(),
+                                                                  'subject' => $comment->getReply()->getTopic()->getSubject(),
+                                                                  'content' => $comment->getReply()->getTopic()->getContent(),
+                                                                  'status' => $comment->getReply()->getTopic()->getStatus(),
+                                                                  'date' => $comment->getReply()->getTopic()->getDate(),
+                                                                  'category_id' => $comment->getReply()->getTopic()->getCategory()->getId(),
+                                                                  'category_name' => $comment->getReply()->getTopic()->getCategory()->getName(),
+                                                                  'views' => $comment->getReply()->getTopic()->getViews(),
+                                                                  'answers' => count($comment->getReply()->getTopic()->getReplies())
+                                                                 )
+                                                 ));
+        }
+        $result = array("user"=> $user, "topics"=> $allTopics,"replies"=>$allReplies,"comments"=>$allComments);
+        return View::create($result, Response::HTTP_OK, []);
+    }
 }
