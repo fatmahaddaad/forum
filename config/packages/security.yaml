@@ -397,4 +397,4 @@ security:
         - { path: ^/activateUser, roles: ROLE_ADMIN }
         - { path: ^/deactivateUser, roles: ROLE_ADMIN }
         - { path: ^/users, roles: [ROLE_ADMIN, ROLE_MODERATOR] }
-        - { path: ^/user, roles: [ROLE_ADMIN, ROLE_MODERATOR] }
+        - { path: ^/user, roles: IS_AUTHENTICATED_ANONYMOUSLY }
