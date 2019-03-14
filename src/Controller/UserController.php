@@ -562,7 +562,7 @@ class UserController extends AbstractController
      * @return View
      *
      * @SWG\Tag(name="User")
-     * @Route("api/users/", methods={"GET"})
+     * @Route("api/user/", methods={"GET"})
      *
      * @SWG\Response(
      *     response=200,
